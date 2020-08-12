@@ -8,16 +8,16 @@
         <!-- <h6>Upload a different photo...</h6> -->
         <?php
         if(!$readonly){
-            echo '<input type="file" name="phot o" class="text-center center-block file-upload">';
+            echo '<input type="file" name="photo" class="text-center center-block file-upload">';
         }
         ?>
       </div></hr><br>
           <ul class="list-group">
             <li class="list-group-item text-muted"><h4>Record</h4> <i class="fa fa-dashboard fa-1x"></i></li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Rent Properties </strong></span> 125</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Properties Renting</strong></span> 13</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Contracts</strong></span> 37</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Posts</strong></span> 78</li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Rent Properties </strong></span> <?php echo $profile_status["rent"]; ?></li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Properties Renting</strong></span> <?php echo $profile_status["renting"]; ?></li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Contracts</strong></span> <?php echo $profile_status["contract"]; ?></li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Posts</strong></span> <?php echo $profile_status["post"]; ?></li>
           </ul> 
           
         </div><!--/col-3-->

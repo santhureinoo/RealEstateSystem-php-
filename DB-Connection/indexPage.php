@@ -26,6 +26,26 @@
             return null;
         }
 
+        function getNumbersFromCities() {
+            global $db;
+            $sql = "SELECT city,COUNT(city) as number FROM PROPERTY group by city ";
+            $result = $db->query($sql);
+            $cityPropertyList = [[]];
+            $cityPropertyList["other"] = 0;
+            if(isset($result)) {
+                foreach($result as $res){
+                    if($res["city"] !== 'Mandalay' && $res["city"] !== 'Rangoon' && $res["city"] !== "Nay Pyi Taw") {
+                        $cityPropertyList["other"] = $cityPropertyList["other"] + $res["number"];
+                    }
+                    else {
+                        $cityPropertyList[$res["city"]] = $res["number"];
+                    }
+                    
+                }
+            }
+           return $cityPropertyList;
+        }
+
         function getPostsByCityName($cityName){
             global $db;
 

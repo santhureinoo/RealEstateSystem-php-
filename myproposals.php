@@ -3,6 +3,8 @@ session_start();
 if(!isset($_SESSION["current_user"])) {
     header('Location: login.php');
 }
+
+    include("DB-Connection/property.php");
     include("DB-Connection/personal_data.php");
     include("DB-Connection/login.php");
 
@@ -80,8 +82,7 @@ if(!isset($_SESSION["current_user"])) {
                 <?php  echo $_SESSION["current_user"]?>
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Contact Us</a>
-                <div class="dropdown-divider"></div>
+              
                 <a href="login.php?logout=y" class="dropdown-item">Log Out</a>
               </div>
             </li>
@@ -108,6 +109,44 @@ if(!isset($_SESSION["current_user"])) {
                             $desc= $proposal["description"];
                             $owner = $proposal["owner"];
                             $ownerid = $proposal["ownerid"];
+                            $profile_data = getUserById($proposal["ownerid"]);
+                            $encodedImage = base64_encode($profile_data["photo"]);
+                            $profile_status = getProfileStatus($proposal["ownerid"]);
+                            $readonly =true;
+                            ob_start();
+                            require "profile_detail.php";
+                        $content = ob_get_clean();                     
+                        function profileData(){
+                          global $id,$content;
+                          global $content;
+                         
+                              return ' <div class="modal " id="profile_'.$id.'">
+                              <div class="modal-dialog modal-lg mw-100 w-75">
+                                <div class="modal-content">
+                            
+                                  
+                                  <div class="modal-header">
+                                    <h4 class="modal-title">Profile</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                  </div>
+                            
+                                  <!-- Modal body -->
+                                  <div class="modal-body">
+                                  '.
+                                 $content
+                                .'
+                                  </div>
+                            
+                                  <!-- Modal footer -->
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                  </div>
+                            
+                                </div>
+                              </div>
+                            </div>
+                        </div>';
+                        }
                             $status=$proposal["status"];
                             $date=$proposal["created_at"];
                             $id = $proposal["id"];
@@ -137,7 +176,7 @@ if(!isset($_SESSION["current_user"])) {
                               </div>
                               </div>
                             </div>';
-                              $buttons = $deleteModal."  <form action='' method='post'> <button data-toggle='modal' data-target='#deleteModal".$id."' class='btn btn-danger'>Delete</button><button type='submit' name='confirm' value='$id' class='btn btn-success ml-2'>Confirm</button><input type='hidden' name='chatid' value='$ownerid'><input type='hidden' name='chatname' value='$owner'><button name='chat' class='btn btn-primary ml-2'>Chat</button></form>";
+                              $buttons = $deleteModal."  <form action='' method='post'> <button type='button' data-toggle='modal' data-target='#deleteModal".$id."' class='btn btn-danger'>Delete</button><button type='button' class='btn btn-primary ml-2' data-toggle='modal' data-target='#profile_".$id."'>View Profile</button><button type='submit' name='confirm' value='$id' class='btn btn-success ml-2'>Confirm</button><input type='hidden' name='chatid' value='$ownerid'><input type='hidden' name='chatname' value='$owner'><button name='chat' class='btn btn-primary ml-2'>Chat</button></form>";
                             }
                             else if($status == "Rejected") {
                               $deleteModal = ' 
@@ -163,7 +202,7 @@ if(!isset($_SESSION["current_user"])) {
                               </div>
                               </div>
                             </div>';
-                                $buttons = $deleteModal."  <form action='' method='post'><button data-toggle='modal' data-target='#deleteModal".$id."' class='btn btn-danger'>Delete</button><input type='hidden' name='postid' value='$postid'><button type='submit' name='reapply' value='$id' class='btn btn-primary ml-2'>Re-Apply</button><input type='hidden' name='chatid' value='$ownerid'><input type='hidden' name='chatname' value='$owner'><button name='chat' class='btn btn-primary ml-2'>Chat</button></form>";
+                                $buttons = $deleteModal."  <form action='' method='post'><button data-toggle='modal' data-target='#deleteModal".$id."' class='btn btn-danger'>Delete</button><input type='hidden' name='postid' value='$postid'><button type='button' class='btn btn-primary ml-2' data-toggle='modal' data-target='#profile_".$id."'>View Profile</button><button type='submit' name='reapply' value='$id' class='btn btn-primary ml-2'>Re-Apply</button><input type='hidden' name='chatid' value='$ownerid'><input type='hidden' name='chatname' value='$owner'><button name='chat' class='btn btn-primary ml-2'>Chat</button></form>";
                             }
                             else if($status == "Waiting") {
                               $deleteModal = ' 
@@ -189,7 +228,7 @@ if(!isset($_SESSION["current_user"])) {
                               </div>
                               </div>
                             </div>';
-                                $buttons = $deleteModal."  <form action='' method='post'><button data-toggle='modal' data-target='#deleteModal".$id."' class='btn btn-danger'>Delete</button><input type='hidden' name='postid' value='$postid'><input type='hidden' name='chatid' value='$ownerid'><input type='hidden' name='chatname' value='$owner'><button name='chat' class='btn btn-primary ml-2'>Chat</button></form>";
+                                $buttons = $deleteModal."  <form action='' method='post'><button type='button'  data-toggle='modal' data-target='#deleteModal".$id."' class='btn btn-danger'>Delete</button><button type='button' class='btn btn-primary ml-2' data-toggle='modal' data-target='#profile_".$id."'>View Profile</button><input type='hidden' name='postid' value='$postid'><input type='hidden' name='chatid' value='$ownerid'><input type='hidden' name='chatname' value='$owner'><button name='chat' class='btn btn-primary ml-2'>Chat</button></form>";
                             }
                             else if($status == "Expired") {
                               $deleteModal = ' 
@@ -208,17 +247,17 @@ if(!isset($_SESSION["current_user"])) {
                                 <div class="modal-footer">
                                 <form action="" method="post">
                                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" name="confirmDelete" value="'.$id.'" class="btn btn-primary">Confirm</button>
+                                    <button type="submit" type="button"  name="confirmDelete" value="'.$id.'" class="btn btn-primary">Confirm</button>
                                   </form>	
                                 </div>
                                 </div>
                               </div>
                               </div>
                             </div>';
-                                $buttons = $deleteModal."  <form action='' method='post'><button data-toggle='modal' data-target='#deleteModal".$id."' class='btn btn-danger'>Delete</button></form>";
+                                $buttons = $deleteModal."  <form action='' method='post'><button type='button' class='btn btn-primary ml-2' data-toggle='modal' data-target='#profile_".$id."'>View Profile</button><button data-toggle='modal' data-target='#deleteModal".$id."' class='btn btn-danger'>Delete</button></form>";
                             }
                             else if($status == "Completed") {
-                              $buttons = "  <form action='' method='post'><button name='contract' value='$id' class='btn btn-primary ml-2'>View Contract</button><input type='hidden' name='chatid' value='$ownerid'><input type='hidden' name='chatname' value='$owner'><button name='chat' class='btn btn-primary ml-2'>Chat</button></form>";
+                              $buttons = "  <form action='' method='post'><button name='contract' value='$id' class='btn btn-primary ml-2'>View Contract</button><button type='button' class='btn btn-primary ml-2' data-toggle='modal' data-target='#profile_".$id."'>View Profile</button><input type='hidden' name='chatid' value='$ownerid'><input type='hidden' name='chatname' value='$owner'><button name='chat' class='btn btn-primary ml-2'>Chat</button></form>";
                             }
                              echo "
                                      <tr>
@@ -239,8 +278,10 @@ if(!isset($_SESSION["current_user"])) {
                                                  ".$buttons."
                                                 </form>
                                          </td>
+                                         
                                      </tr>  
                              ";
+                             echo profileData();
                         } 
                     }
                 

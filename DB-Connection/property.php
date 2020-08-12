@@ -368,7 +368,7 @@
                 require "../profile_detail.php";
             $content = ob_get_clean();  
                 return ' <div class="modal " id="profile_'. $row["id"].'">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-lg mw-100 w-75">
                   <div class="modal-content">
               
                     
@@ -456,7 +456,13 @@
             global $db;
             $extraFilter=" ";
             if(!empty($city) || !empty($region) || !empty($township) || !empty($type) || !empty($region) || !empty($square_feet) || !empty($propertyName)){
-                $extraFilter= " AND (Property.city='$city' OR Property.region='$region' OR Property.township='$township' OR Property.name ='$propertyName' OR Property.type='$type') ";
+                if($city === 'other') {
+                    $city = "Property.city != 'Mandalay' AND Property.city != 'Rangoon' AND Property.city !='Nay Pyi Taw'";
+                }
+                else {
+                    $city = "Property.city ='".$city."'";
+                }
+                $extraFilter= " AND (".$city." OR Property.region='$region' OR Property.township='$township' OR Property.name ='$propertyName' OR Property.type='$type') ";
             }
             if(!empty($min) && !empty($max)) {
                 $extraFilter= $extraFilter . "AND (Post.initial_amount BETWEEN $min AND $max) ";

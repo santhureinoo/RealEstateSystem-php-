@@ -15,9 +15,13 @@
          function updateUser($photo,$name,$email,$password,$ph_no,$nrc,$address,$city,$job,$income,$relationship,$religion,$family_members){
             global $db;
             $userid= $_SESSION['userid'];
-            $photo = readyToSave($photo);
-            $sql = "UPDATE user SET password='$password',photo='$photo',username= '$name',email='$email',ph_no='$ph_no',nrc='$nrc',address='$address',city='$city',job='$job',income=$income,relationship=$relationship,religion='$religion',family_members='$family_members' WHERE id=$userid";
-            echo $db->update($sql);
+            $photoPart = "";
+            if(isset($photo) && $photo["name"] !== "") {
+                $photo = readyToSave($photo);
+               $photoPart = "photo='$photo',";
+            }
+            
+            $sql = "UPDATE user SET password='$password',".$photoPart."username= '$name',email='$email',ph_no='$ph_no',nrc='$nrc',address='$address',city='$city',job='$job',income=$income,relationship=$relationship,religion='$religion',family_members='$family_members' WHERE id=$userid";
             
         }
 

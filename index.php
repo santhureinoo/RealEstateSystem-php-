@@ -8,6 +8,7 @@
 	include("DB-Connection/indexPage.php");
 	checkStatus();
 	getLatestPost();
+	$cityList = getNumbersFromCities();
 	if(isset($_POST['search'])){
 		header('Location: categories.php?region='.$_POST['region'].'&township='.$_POST['township'].'&name='.$_POST["property_name"].'&square_feet='.$_POST['square_feet'].'&rooms='.$_POST['rooms'].'&city='.$_POST["city"].'&type='.$_POST['type'].'&minprice='.$_POST['minprice'].'&maxprice='.$_POST['maxprice']);
 	}
@@ -256,25 +257,25 @@
 				<a href="categories.php?city=nay pyi taw" class="gallery-item set-bg" data-setbg="img/gallery/1.jpg">
 					<div class="gi-info">
 						<h3>Naypyitaw</h3>
-						<p>118 Properties</p>
+						<p><?php echo $cityList["Nay Pyi Taw"]; ?> Properties</p>
 					</div>
 				</a>
 				<a href="categories.php?city=mandalay" class="gallery-item set-bg" data-setbg="img/gallery/2.jpg">
 					<div class="gi-info">
 						<h3>Mandalay</h3>
-						<p>112 Properties</p>
+						<p><?php echo $cityList["Mandalay"]; ?> Properties</p>
 					</div>
 				</a>
 				<a href="categories.php?city=Rangoon" class="gallery-item set-bg" data-setbg="img/gallery/3.jpg">
 					<div class="gi-info">
 						<h3>Rangoon</h3>
-						<p>72 Properties</p>
+						<p><?php echo $cityList["Rangoon"]; ?> Properties</p>
 					</div>
 				</a>
-				<a href="categories.php" class="gallery-item set-bg">
+				<a href="categories.php?city=other" class="gallery-item set-bg">
 					<div class="gi-info">
 						<h3>Others</h3>
-						<p>50 Properties</p>
+						<p><?php echo $cityList["other"]; ?> Properties</p>
 					</div>
 				</a>
 				

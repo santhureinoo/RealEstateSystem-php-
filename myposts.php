@@ -75,8 +75,7 @@ if(!isset($_SESSION["current_user"])) {
                 <?php  echo $_SESSION["current_user"]?>
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Contact Us</a>
-                <div class="dropdown-divider"></div>
+              
                 <a href="login.php?logout=y" class="dropdown-item">Log Out</a>
               </div>
             </li>

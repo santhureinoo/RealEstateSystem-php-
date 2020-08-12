@@ -246,4 +246,31 @@
             else
             return true;
         }
+
+        function getProfileStatus($userid) {
+            global $db;
+            $info = [[]];
+            $info["rent"] = 0;
+            $info["renting"]  = 0;
+            $info["contract"] = 0;
+            $info["post"] = 0;
+            $sql = "SELECT COUNT(*) as tenantCount FROM proposal WHERE tenantid = $userid";
+            $res = $db->query($sql);
+            if(isset($res))
+                $info["rent"] =$res[0]["tenantCount"];
+            $sql = "SELECT COUNT(*) as ownerCount FROM proposal WHERE ownerid = $userid";
+            $res = $db->query($sql);
+            if(isset($res))
+                $info["renting"] =$res[0]["ownerCount"];
+            $sql = "SELECT COUNT(*) as contractCount FROM proposal WHERE tenantid = $userid OR ownerid = $userid";
+            $res = $db->query($sql);
+            if(isset($res))
+                $info["contract"] =$res[0]["contractCount"];
+            $sql = "SELECT COUNT(*) as postCount FROM post WHERE ownerid = $userid";
+            $res = $db->query($sql);
+            if(isset($res))
+                $info["post"] =$res[0]["postCount"];
+            
+            return $info;
+        }
 ?>

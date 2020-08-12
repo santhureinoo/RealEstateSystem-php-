@@ -84,8 +84,7 @@ if(!isset($_SESSION["current_user"])) {
                 <?php  echo $_SESSION["current_user"]?>
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Contact Us</a>
-                <div class="dropdown-divider"></div>
+              
                 <a href="login.php?logout=y" class="dropdown-item">Log Out</a>
               </div>
             </li>
@@ -117,8 +116,9 @@ if(!isset($_SESSION["current_user"])) {
                             $date=$proposal["created_at"];
                             $id = $proposal["id"];
                             $postid = $proposal["postid"];   
-                            $profile_data = getUserById($_SESSION["userid"]);
+                            $profile_data = getUserById($proposal["tenantid"]);
                             $encodedImage = base64_encode($profile_data["photo"]);
+                            $profile_status = getProfileStatus($proposal["tenantid"]);
                             $readonly =true;
                             ob_start();
                                 require "profile_detail.php";
@@ -128,7 +128,7 @@ if(!isset($_SESSION["current_user"])) {
                               global $content;
                              
                                   return ' <div class="modal " id="profile_'.$id.'">
-                                  <div class="modal-dialog modal-lg">
+                                  <div class="modal-dialog modal-lg mw-100 w-75">
                                     <div class="modal-content">
                                 
                                       

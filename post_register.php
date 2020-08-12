@@ -8,7 +8,7 @@
   require_once("DB-Connection/post.php");
   require_once("util/validate.php");
 
-  $edit = false;
+  $edit = true;
   $selectedPost;
   if(isset($_SERVER['QUERY_STRING'])) {
 		$queries = array();
@@ -133,7 +133,7 @@
                                 <select id="type" name='property' <?php echo !$edit? 'disabled':''; ?> class="form-control">
                                         <option selected>Select Your Property</option>
                                         <?php
-                                            $result = getPropertiesByUser($selectedPost['propertyid'],$_SESSION['userid']);
+                                            $result = getPropertiesByUser(isset($selectedPost)?$selectedPost['propertyid']:0,$_SESSION['userid']);
                                             foreach($result as $res) {
                                                   $id = $res["id"];
                                                   $selected = "";
@@ -215,7 +215,7 @@
 
 <script>
     <?php
-                      if($edit) {
+                      if($edit && isset($images)) {
                         for($i=0;$i<count($images);$i++){
                           echo ' 
                           $("#image_preview").append("<div id="preview_'.$i.'" class="col-md-3">

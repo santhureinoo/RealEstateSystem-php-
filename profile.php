@@ -13,6 +13,7 @@ if(isset($_POST["save"]) && isset($_FILES)) {
 }
 
 $profile_data = getUserById($_SESSION["userid"]);
+$profile_status = getProfileStatus($_SESSION["userid"]);
 $encodedImage = base64_encode($profile_data["photo"]);
 
 ?>
@@ -73,9 +74,7 @@ $encodedImage = base64_encode($profile_data["photo"]);
                 <?php  echo $_SESSION["current_user"]?>
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Contact Us</a>
-                <a class="dropdown-item" href="#">Switch Accounts</a>
-                <div class="dropdown-divider"></div>
+              
                 <a href="login.php?logout=y" class="dropdown-item">Log Out</a>
               </div>
             </li>

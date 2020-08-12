@@ -85,8 +85,7 @@ $viewProfile = false;
                 <?php  echo $_SESSION["current_user"]?>
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Contact Us</a>
-                <div class="dropdown-divider"></div>
+              
                 <a href="login.php?logout=y" class="dropdown-item">Log Out</a>
               </div>
             </li>
@@ -113,9 +112,10 @@ $viewProfile = false;
                       $readonly =true;
                       $profile_data = getUserById($_POST["viewProfile"]);
                       $encodedImage = base64_encode($profile_data["photo"]);
+                      $profile_status = getProfileStatus($_SESSION["userid"]);
                       echo '
                       <div class="modal fade" id="profileModal" tabindex="-1"  role="dialog" aria-labelledby="profileModal" aria-hidden="true">
-                      <div class="modal-dialog modal-lg" role="document" style="max-width: 80%;">
+                      <div class="modal-dialog modal-lg mw-100 w-75" role="document" style="max-width: 80%;">
                         <div class="modal-content">
                           <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>

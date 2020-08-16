@@ -187,6 +187,13 @@
             return $result[0];
         }
 
+        function getDisplayContract($proposalid){
+            global $db;
+            $sql = "SELECT ou.id as ownerid, ou.userName as ownerName, ou.nrc as ownerNRC, CONCAT(ou.address,',',ou.city) as ownerAddress, tu.id as tenantid, tu.userName as tenantName, tu.nrc as tenantNRC, CONCAT(tu.address,',',tu.city) as tenantAddress,pr.city as pCity,pr.township as pTownship, pr.region as pRegion,pr.name as pName  FROM user ou INNER JOIN proposal p On ou.id = p.ownerid INNER JOIN user tu On tu.id = p.tenantid INNER JOIN post po On p.postid = po.id INNER JOIN property pr On pr.id = po.propertyid";
+            $result = $db->query($sql);
+            return $result[0];
+        }
+
         function getProposalById($id) {
             global $db;
             $sql= "SELECT * FROM proposal p INNER JOIN post pt On p.postid = pt.id INNER JOIN property ppt ON pt.propertyid=ppt.id WHERE p.id=$id";

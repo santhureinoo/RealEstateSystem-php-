@@ -6,6 +6,7 @@ if(!isset($_SESSION["current_user"])) {
     include("DB-Connection/personal_data.php");
     include("DB-Connection/property.php");
 
+    $contractDisplay;
     if(isset($_POST["confirm"]) && isset($_POST["isconfirm"])){
         if( $_POST['isconfirm']) {
             confirmApprovedProposal($_POST["confirm"]);
@@ -25,7 +26,8 @@ if(!isset($_SESSION["current_user"])) {
 		parse_str($_SERVER['QUERY_STRING'], $queries);
 		if(isset($queries['id'])) {
 		  	$id = $queries['id'];
-			$proposal_detail = getProposalById($id);
+            $proposal_detail = getProposalById($id);
+            $contractDisplay = getDisplayContract($proposal_detail["id"]);
 			// $user_detail = getUserById($post_detail["ownerid"]);
         }
         if(isset($queries['id']) && isset($queries['isOwner']) && $queries['isOwner'] == 'y') {
@@ -33,6 +35,7 @@ if(!isset($_SESSION["current_user"])) {
             $id = $queries['id'];
           $proposal_detail = getProposalById($id);
           $contract_detail = getContractById($id);
+          $contractDisplay = getDisplayContract($proposal_detail["id"]);
           // $user_detail = getUserById($post_detail["ownerid"]);
       }
         else {
@@ -88,42 +91,42 @@ if(!isset($_SESSION["current_user"])) {
                                 <div class="col-md-6">
                                         <h4> Landlord</h4>
                                         <div class="form-group row mt-3">
-                                            <label for="staticEmail" class="col-sm-4 col-form-label">Name</label>
+                                            <label for="lName" class="col-sm-4 col-form-label">Name</label>
                                             <div class="col-sm-8">
-                                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="Kimmy">
+                                            <input type="text" readonly class="form-control-plaintext" id="lName" value="<?php echo isset($contractDisplay)? $contractDisplay["ownerName"]:'Unknown';?>">
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="staticEmail" class="col-sm-4 col-form-label">NRC</label>
+                                            <label for="lNRC" class="col-sm-4 col-form-label">NRC</label>
                                             <div class="col-sm-8">
-                                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="9/MHM(N)032569">
+                                            <input type="text" readonly class="form-control-plaintext" id="lNRC" value="<?php echo isset($contractDisplay)? $contractDisplay["ownerNRC"]:'Unknown';?>">
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="staticEmail" class="col-sm-4 col-form-label">Address</label>
+                                            <label for="lAddress" class="col-sm-4 col-form-label">Address</label>
                                             <div class="col-sm-8">
-                                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="35*36 streets, Mandalay">
+                                            <input type="text" readonly class="form-control-plaintext" id="lAddress" value="<?php echo isset($contractDisplay)? $contractDisplay["ownerAddress"]:'Unknown';?>">
                                             </div>
                                         </div>
                                 </div>
                                 <div class="col-md-6">
                                         <h4> Tenant</h4>
                                         <div class="form-group row mt-3">
-                                            <label for="staticEmail" class="col-sm-4 col-form-label">Name</label>
+                                            <label for="tName" class="col-sm-4 col-form-label">Name</label>
                                             <div class="col-sm-8">
-                                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="Kimmy">
+                                            <input type="text" readonly class="form-control-plaintext" id="tName" value="<?php echo isset($contractDisplay)? $contractDisplay["tenantName"]:'Unknown';?>">
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="staticEmail" class="col-sm-4 col-form-label">NRC</label>
+                                            <label for="tNRC" class="col-sm-4 col-form-label">NRC</label>
                                             <div class="col-sm-8">
-                                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="9/MHM(N)032569">
+                                            <input type="text" readonly class="form-control-plaintext" id="tNRC" value="<?php echo isset($contractDisplay)? $contractDisplay["tenantNRC"]:'Unknown';?>">
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="staticEmail" class="col-sm-4 col-form-label">Address</label>
+                                            <label for="tAddress" class="col-sm-4 col-form-label">Address</label>
                                             <div class="col-sm-8">
-                                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="35*36 streets, Mandalay">
+                                            <input type="text" readonly class="form-control-plaintext" id="tAddress" value="<?php echo isset($contractDisplay)? $contractDisplay["tenantAddress"]:'Unknown';?>">
                                             </div>
                                         </div>
                                 </div>
@@ -136,27 +139,27 @@ if(!isset($_SESSION["current_user"])) {
                                 <div class="col-md-6">
                                             <h4> House/Apartment Information</h4>
                                             <div class="form-group row mt-3">
-                                                <label for="staticEmail" class="col-sm-3 col-form-label">City</label>
+                                                <label for="city" class="col-sm-3 col-form-label">City</label>
                                                 <div class="col-sm-9">
-                                                <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="Kimmy">
+                                                <input type="text" readonly class="form-control-plaintext" id="city" value="<?php echo isset($contractDisplay)? $contractDisplay["pCity"]:'Unknown';?>">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="staticEmail" class="col-sm-3 col-form-label">Township</label>
+                                                <label for="township" class="col-sm-3 col-form-label">Township</label>
                                                 <div class="col-sm-9">
-                                                <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="9/MHM(N)032569">
+                                                <input type="text" readonly class="form-control-plaintext" id="township" value="<?php echo isset($contractDisplay)? $contractDisplay["pTownship"]:'Unknown';?>">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="staticEmail" class="col-sm-3 col-form-label">Street</label>
+                                                <label for="street" class="col-sm-3 col-form-label">Region</label>
                                                 <div class="col-sm-9">
-                                                <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="35*36 streets, Mandalay">
+                                                <input type="text" readonly class="form-control-plaintext" id="region" value="<?php echo isset($contractDisplay)? $contractDisplay["pRegion"]:'Unknown';?>"">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="staticEmail" class="col-sm-3 col-form-label">No/Name</label>
+                                                <label for="noname" class="col-sm-3 col-form-label">No/Name</label>
                                                 <div class="col-sm-9">
-                                                <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="MM-25">
+                                                <input type="text" readonly class="form-control-plaintext" id="noname" value="MM-25">
                                                 </div>
                                             </div>
                                     </div>
@@ -165,44 +168,45 @@ if(!isset($_SESSION["current_user"])) {
                                             <div class="form-group row mt-3">
                                                 <label for="amount" class="col-sm-3 col-form-label">Amount (Kyats/Month)</label>
                                                 <div class="col-sm-9">
-                                                <input type="text" <?php echo $readOnlyOrNot; ?> class="form-control-plaintext" id="amount_txt" value="<?php echo isset($contract_detail)? $contract_detail["amount"]:$proposal_detail["initial_amount"];?>">
-                                                </div>
+                                                <input type="text" <?php echo $readOnlyOrNot; ?> class="form-control" id="amount_txt" value="<?php echo isset($contract_detail)? $contract_detail["amount"]:$proposal_detail["initial_amount"];?>">
+                                                  
+                                            </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="staticEmail" class="col-sm-3 col-form-label">Duration <br/>(Month,Year)</label>
+                                                <label for="duration" class="col-sm-3 col-form-label">Duration <br/>(Month,Year)</label>
                                                 <div class="col-sm-9 row">
                                                     <div class="col-sm-6"> <input type="email"  <?php echo $readOnlyOrNot; ?> class="form-control" id="month_txt" placeholder="Months"></div>
                                                     <div class="col-sm-6"><input type="email"  <?php echo $readOnlyOrNot; ?> class="form-control" id="year_txt" placeholder="Years"></div>                                            
                                                 </div> 
                                             </div>
                                             <div class="form-group row">
-                                                <label for="staticEmail" class="col-sm-3 col-form-label">From</label>
+                                                <label for="duration" class="col-sm-3 col-form-label">From</label>
                                                 <div class="col-sm-9">
                                                         <input  id="fromDate_txt" class="<?php if($readOnlyOrNot == ""){
-                                                            echo " input--style-1 js-datepicker";
+                                                            echo " form-control";
                                                         } ?>"  <?php echo $readOnlyOrNot; ?> type="text" placeholder="From Date" value="<?php 
                                                             if(isset($contract_detail)){
                                                                     echo  date('d-m-Y',strtotime($contract_detail["from_date"]));;
                                                             }
                                                         ?>">
-                                                        <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
+                                                        <!-- <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i> -->
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="staticEmail" class="col-sm-3 col-form-label">To</label>
+                                                <label for="toDate_txt" class="col-sm-3 col-form-label">To</label>
                                                 <div class="col-sm-9">
                                                         <input id="toDate_txt" class="<?php if($readOnlyOrNot == ""){
-                                                            echo " input--style-1 js-datepicker";
+                                                            echo " form-control";
                                                         } ?>" <?php echo $readOnlyOrNot; ?> type="text" placeholder="To Date" name="todate" value="<?php
                                                             if(isset($contract_detail)){
                                                                 echo  date('d-m-Y',strtotime($contract_detail["to_date"]));;
                                                              }
                                                         ?>">
-                                                        <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
+                                                        <!-- <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i> -->
                                                 </div>
                                             </div>
                                             <div class="form-group row mt-3">
-                                                <label for="staticEmail" class="col-sm-3 col-form-label">Members</label>
+                                                <label for="member_txt" class="col-sm-3 col-form-label">Members</label>
                                                 <div class="col-sm-9"> 
                                                     <input type="text"  <?php echo $readOnlyOrNot; ?> class="form-control" id="member_txt" placeholder="Number of members who stay" value="<?php  if(isset($contract_detail)){echo  $contract_detail['members'];} ?>">
                                                 </div>
@@ -307,8 +311,9 @@ if(!isset($_SESSION["current_user"])) {
                                              $isContract= true;
                                             } 
                                         $confirmOrSave=isset($contract_detail)?"Confirm": "Submit";
+                                        $initialAmount = isset($contract_detail)? $contract_detail["amount"]:$proposal_detail["initial_amount"];
                                         echo '<form action="" method="POST">';
-                                        echo "<input type='hidden' name='amount' id='amount'><input type='hidden' name='toDate' id='toDate'><input type='hidden' name='fromDate' id='fromDate'><input type='hidden' name='member' id='member'>";
+                                        echo "<input type='hidden' name='amount' id='amount' value='".  $initialAmount."'><input type='hidden' name='toDate' id='toDate'><input type='hidden' name='fromDate' id='fromDate'><input type='hidden' name='member' id='member'>";
                                         echo " <input type='hidden' name='isconfirm' value='".$isContract."'>";
                                         echo ' <input type="hidden" name="confirmOrSave" value="'.$confirmOrSave.'"><button id="confirm" class="btn btn--radius btn--green" '.$success .' name="confirm" value="'.$id.'" type="submit">'.$confirmOrSave.'</button>';
                                         echo '</form>';
@@ -322,6 +327,8 @@ if(!isset($_SESSION["current_user"])) {
 
     <!-- Jquery JS-->
     <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/popper.min.js"></script>
     <!-- Vendor JS-->
     <script src="js/select2.min.js"></script>
     <script src="js/moment.min.js"></script>
@@ -331,6 +338,8 @@ if(!isset($_SESSION["current_user"])) {
     <script src="js/global.js"></script>
     <script>
         $(function() {
+            $("#fromDate_txt").datepicker();
+            $("#toDate_txt").datepicker();
   var $tabButtonItem = $('#tab-button li'),
       $tabSelect = $('#tab-select'),
       $tabContents = $('.tab-contents'),
@@ -355,24 +364,76 @@ if(!isset($_SESSION["current_user"])) {
       $("#confirm").prop('disabled', false);
   })
 
-  $('#amount_txt').on('change',function() {
+  $('#amount_txt').change(function() {
         var amount = zeroPad(($('#amount_txt').val()),12);
         $('#finalAmount').val(amount);
-        $("#amount").val(amount);
+        $("#amount").val($('#amount_txt').val());
   })
 
-  $("#toDate_txt").on('change',function() {
+  $("#toDate_txt").change(function() {
+    adjustDuration();
       var toDate = $("#toDate_txt").val();
-      $("toDate").val(toDate);
+      $("#toDate").val(toDate);
   })
-   $("#fromDate_txt").on("change",function() {
+
+   $("#fromDate_txt").change(function() {
+    adjustDuration();
+        var toDate = $("#toDate_txt").val();
        var fromDate = $("#fromDate_txt").val();
-       $("fromDate").val(fromDate);
+       $("#fromDate").val(fromDate);
    })
-   $("#member_txt").on('change',function() {
+   $("#member_txt").change(function() {
       var member = $("#member_txt").val();
       $("#member").val(member);
   })
+
+  function adjustDuration(){
+    var toDate = $("#toDate_txt").val();
+    var fromDate = $("#fromDate_txt").val();
+    if(toDate !== '' && fromDate !== ''){
+        toDate = moment(toDate);
+        fromDate = moment(fromDate);
+        var diffDuration =  moment.duration(toDate.diff(fromDate));
+        $('#month_txt').val(diffDuration.months());
+        $('#year_txt').val(diffDuration.years());
+    }
+  }
+
+  $('#month_txt').change(function(){
+    var fromDate_txt = $("#fromDate_txt").val();
+    if(fromDate_txt === ''){
+        
+        fromDate_txt = moment(new Date());
+        $('#fromDate_txt').val(fromDate_txt.format('MM/DD/YYYY'));
+        $('#fromDate').val(fromDate_txt.format('MM/DD/YYYY'));
+    }
+    else {
+        fromDate_txt = moment(fromDate_txt);
+    }
+    $('#toDate_txt').val(fromDate_txt.add($(this).val(),'months').format('MM/DD/YYYY'));
+    $('#toDate').val(fromDate_txt.add($(this).val(),'months').format('MM/DD/YYYY'));
+  })
+
+  $('#year_txt').change(function(){
+    var fromDate_txt = $("#fromDate_txt").val();
+    if(fromDate_txt === ''){
+        
+        fromDate_txt = moment(new Date());
+        $('#fromDate_txt').val(fromDate_txt.format('MM/DD/YYYY'));
+        $('#fromDate').val(fromDate_txt.format('MM/DD/YYYY'));
+    }
+    else {
+        fromDate_txt = moment(fromDate_txt);
+    }
+    $('#toDate_txt').val(fromDate_txt.add($(this).val(),'years').format('MM/DD/YYYY'));
+    $('#toDate').val(fromDate_txt.add($(this).val(),'years').format('MM/DD/YYYY'));
+  })
+
+  function checkDateValidity(){
+    var toDate = $("#toDate_txt").val();
+    var fromDate = $("#fromDate_txt").val();
+
+  }
 
   $tabSelect.on('change', function() {
     var target = $(this).val(),

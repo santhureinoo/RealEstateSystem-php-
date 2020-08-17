@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
+<?php 
+  	if(!isset($_SESSION)) {
+      session_start();
+    }
+  include("../DB-Connection/property.php");
+  include("../DB-Connection/login.php");
+  include("../DB-Connection/personal_data.php");
+  $arr = getStatusesForIndex();
+?>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -108,9 +113,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>150</h3>
+                <h3><?php echo $arr['properties']; ?></h3>
 
-                <p>New Properties</p>
+                <p>Total Properties</p>
               </div>
               <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -123,7 +128,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>53</h3>
+                <h3><?php echo $arr['contracts']; ?></h3>
 
                 <p>Contracts</p>
               </div>
@@ -138,7 +143,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>44</h3>
+                <h3><?php echo $arr['users']; ?></h3>
 
                 <p>User Registrations</p>
               </div>
@@ -153,7 +158,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3>65</h3>
+                <h3><?php echo $arr['posts']; ?></h3>
 
                 <p>Unique Posts</p>
               </div>

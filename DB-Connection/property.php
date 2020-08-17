@@ -433,7 +433,8 @@
         
         function getPropertiesByUser($selectedPostId,$userid){
             global $db;
-            $sql  = "SELECT id,name FROM property WHERE ownerid=$userid AND (id=$selectedPostId OR status !='Active') AND status !='Deleted'";
+            $sql  = "SELECT DISTINCT p.id,p.name FROM property p,post pt WHERE p.id NOT IN (SELECT propertyid FROM post) AND p.ownerid=$userid AND (p.id=$selectedPostId OR p.status !='Occupied') AND p.status !='Deleted'";
+            echo $sql;
             return $db->query($sql);
         }
 

@@ -4,12 +4,12 @@
         if(!isset($db)) {
                 $db = new ViralDB();
         }
-        function addPost($propertyid,$amount,$description,$ownerid,$images,$featureNames,$featureAmounts){
+        function addPost($postType,$propertyid,$amount,$description,$ownerid,$images,$featureNames,$featureAmounts){
                 global $db;
                 $table_name = "post";
 
                //Save Post
-               $Array_sql = array("propertyid" => $propertyid,"initial_amount"=>$amount,"description"=>$description,"ownerid"=>$ownerid,"status"=>"Waiting","created_at"=>date('Y-m-d'));
+               $Array_sql = array("postType"=>$postType,"propertyid" => $propertyid,"initial_amount"=>$amount,"description"=>$description,"ownerid"=>$ownerid,"status"=>"Waiting","created_at"=>date('Y-m-d'));
                 $result_id = $db->insert($Array_sql,$table_name);
                 
                 //Save Post Features

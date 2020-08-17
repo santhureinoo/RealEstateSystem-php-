@@ -10,7 +10,8 @@ if(!isset($_SESSION["current_user"])) {
     if(isset($_POST["confirm"]) && isset($_POST["isconfirm"])){
         if( $_POST['isconfirm']) {
             confirmApprovedProposal($_POST["confirm"]);
-            insertContract($_POST["confirm"],$_POST["amount"],$_POST["fromDate"],$_POST["toDate"],$_POST["member"]);   
+            insertContract($_POST["confirm"],$_POST["amount"],$_POST["fromDate"],$_POST["toDate"],$_POST["member"],$_FILES["offlineEvidence"]);   
+            header('Location: myproposals.php');
         }
         else {
             $confirm = $_POST['confirm'];
@@ -218,8 +219,14 @@ if(!isset($_SESSION["current_user"])) {
                              <br/>
                             <div class="row">
                                 <div class="col-md-12">
-                                <div class="tabs">
-                                    <div class="tab-button-outer">
+                                <?php if($readOnlyOrNot === 'readonly'){
+                                    $encodedImage = base64_encode($contract_detail['evidence']);
+                                      echo '<div class="row">';
+                                      echo '<div class="col-md-6"><h2>Evidence</h2></div>';
+                                      echo ' <div class="col-md-6"><img src="data:image/jpeg;base64,'.$encodedImage .'" class="avatar img-fluid img-circle img-thumbnail" alt="avatar"></div>';
+                                } ?>
+                                <div class="tabs" <?php echo $readOnlyOrNot === 'readonly'?'style="display: none;"':'' ?>>
+                                    <div class="tab-button-outer" >
                                         <ul id="tab-button">
                                         <li><a href="#tab01">Online Payment</a></li>
                                         <li><a href="#tab02">Offline Payment</a></li>
@@ -256,7 +263,7 @@ if(!isset($_SESSION["current_user"])) {
                                                 $hash_value = hash_hmac('sha256',$params, $secret_key,false);	//Compute hash value
     
                                                 echo '
-                                                <form id="myform" method="post" action="'.$payment_url.'">
+                                                <form id="myform" method="post" action="'.$payment_url.' enctype="multipart/form-data">
                                                     <input type="hidden" name="version" value="'.$version.'"/>
                                                     <input type="hidden" name="merchant_id" value="'.$merchant_id.'"/>
                                                     <input type="hidden" name="currency" value="'.$currency.'"/>
@@ -284,9 +291,10 @@ if(!isset($_SESSION["current_user"])) {
                                                 </form> ';	 
                                         ?>
                                     </div>
+                                    <form action="" method="POST" enctype="multipart/form-data">
                                     <div id="tab02" class="tab-contents">
                                         <h2 class="mb-2">Evidence File</h2>
-                                        <input type='file' id='offline_evidence' name='offline_evidence'>
+                                        <input type='file' id='offlineEvidence' name='offlineEvidence'>
                                     </div>
                                     </div>
                                 </div>
@@ -312,7 +320,7 @@ if(!isset($_SESSION["current_user"])) {
                                             } 
                                         $confirmOrSave=isset($contract_detail)?"Confirm": "Submit";
                                         $initialAmount = isset($contract_detail)? $contract_detail["amount"]:$proposal_detail["initial_amount"];
-                                        echo '<form action="" method="POST">';
+                                    //    echo '<form action="" method="POST">';
                                         echo "<input type='hidden' name='amount' id='amount' value='".  $initialAmount."'><input type='hidden' name='toDate' id='toDate'><input type='hidden' name='fromDate' id='fromDate'><input type='hidden' name='member' id='member'>";
                                         echo " <input type='hidden' name='isconfirm' value='".$isContract."'>";
                                         echo ' <input type="hidden" name="confirmOrSave" value="'.$confirmOrSave.'"><button id="confirm" class="btn btn--radius btn--green" '.$success .' name="confirm" value="'.$id.'" type="submit">'.$confirmOrSave.'</button>';
@@ -360,7 +368,7 @@ if(!isset($_SESSION["current_user"])) {
   });
   const zeroPad = (num, places) => String(num).padStart(places, '0');
 
-  $("#offline_evidence").change(function() {
+  $("#offlineEvidence").change(function() {
       $("#confirm").prop('disabled', false);
   })
 

@@ -37,13 +37,11 @@
         'description'=>array(
           'required' =>true
         ),
-        'password'=>array(
-          'required' =>true
-        )
+       
     ));
 
     if($main_validate->passed()) {
-      addPost($_POST["property"],$_POST["amount"],$_POST["description"],$_SESSION["userid"],$_POST["hidden_images"],$_POST["featureNames"],$_POST["amounts"]);
+      addPost($_POST["postType"],$_POST["property"],$_POST["amount"],$_POST["description"],$_SESSION["userid"],$_POST["hidden_images"],$_POST["featureNames"],$_POST["amounts"]);
     }
     else {
         echo 'Validation errors:';
@@ -111,7 +109,6 @@
             }
         }
 </script>
-<!------ Include the above in your HEAD tag ---------->
 <link href="css/post_register.css" rel="stylesheet">
 <div class="container register-form">
             <form class="form" action="" method="post">
@@ -148,22 +145,30 @@
                                         ?>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <input type="text" name="password" <?php echo !$edit? 'hidden':''; ?> class="form-control" placeholder="Password *" value=""/>
-                            </div>
+
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group">
+                        <div class="form-group">
                                 <input type="text" name="amount"  <?php echo !$edit? 'disabled':''; ?> class="form-control" placeholder="Amount *"  value="<?php echo isset($selectedPost)?$selectedPost["initial_amount"]:"";?>"/>
                             </div>
-                            <div class="form-group">
-                                <input type="text" name="confirm_password" <?php echo !$edit? 'hidden':''; ?> class="form-control" placeholder="Confirm Password *" value=""/>
-                            </div>                         
-                        </div>
+                            </div>
                     </div>
-                    <div class="col-md-12 form-group row">
+                    <div class="form-group row">
+                          <div class="col-md-12 ">
+                          <select id="type" name='postType' <?php echo !$edit? 'disabled':''; ?> class="form-control">
+                                        <option selected>Rent Or Sale?</option>
+                                        <option>Rent</option>
+                                        <option>Sale</option>
+                                </select>
+                          </div>
+                   
+                    </div>
+                    <div class="form-group row">
+                    <div class="col-md-12 form-group">
                                 <textarea name="description" class="form-control" <?php echo !$edit? 'disabled':''; ?> placeholder="Description"><?php echo isset($selectedPost)?$selectedPost["description"]:"";?></textarea>
                     </div>
+                    </div>
+                   
                     <div class="col-md-12 form-group row">
                       <label for="images" class="col-sm-2 col-form-label text-right">Images :</label>
                       <div class="col-md-10">
@@ -188,11 +193,6 @@
                             <input type="text" <?php echo !$edit? 'disabled':''; ?> class="form-control"  id="amounts" name="amounts[]" value="" placeholder="Amount">
                           </div>
                         </div>
-                        <!-- <div class="col nopadding">
-                          <div class="form-group">
-                            <input type="text" class="form-control" id="descriptions" name="descriptions[]" value="" placeholder="Description">
-                          </div>
-                        </div> -->
                         
                         <div class="col nopadding">
                           <div class="form-group">

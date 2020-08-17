@@ -1,6 +1,7 @@
 <?php
         require_once(dirname(__FILE__).'/mysqli_class.php');
         require_once(dirname(__FILE__).'/mysqli_conf.php');
+        require_once(dirname(__FILE__).'/../util/imageConvert.php');
 
         $db = new ViralDB();
         
@@ -189,7 +190,7 @@
             } 
         }
 
-        function insertContract($proposalid,$amount,$from,$to,$members) {
+        function insertContract($proposalid,$amount,$from,$to,$members,$offline_evidence) {
             global $db;
             $table_name = "contract";
             $from_date = date('Y-m-d',strtotime($from));
@@ -197,14 +198,42 @@
             $today = date('Y-m-d');
             $today = date('Y-m-d',strtotime($today));
             $status = "Waiting";
+            $offline_evidence = readyToSave($offline_evidence);
             echo $from_date;
             echo $today;
             if($today >= $from_date && $today <=$to_date) {
                     $status = "Active";
             }
-            $Array_sql = array("proposalid"=>$proposalid,"amount"=>$amount,"from_date"=>$from_date,"to_date"=>$to_date,"members"=>$members,"status"=>$status);
+            $Array_sql = array("proposalid"=>$proposalid,"amount"=>$amount,"from_date"=>$from_date,"to_date"=>$to_date,"members"=>$members,"status"=>$status,"evidence"=>$offline_evidence,"created_at"=>date("Y-m-d"));
             $result = $db->insert($Array_sql,$table_name);
             return $result;
+        }
+
+        function getStatusesForIndex(){
+            global $db;
+            $totalStatus = [];
+            $sql = ' SELECT COUNT(*) as properties FROM property';
+            $res = $db->query($sql);
+            if(isset($res) && $res[0]["properties"] > 0){
+                $totalStatus['properties'] = $res[0]["properties"];
+            }
+            $sql = ' SELECT COUNT(*) as contracts FROM contract';
+            $res = $db->query($sql);
+            if(isset($res) && $res[0]["contracts"] > 0){
+                $totalStatus['contracts'] = $res[0]["contracts"];
+            }
+            $sql = ' SELECT COUNT(*) as users FROM user';
+            $res = $db->query($sql);
+            if(isset($res) && $res[0]["users"] > 0){
+                $totalStatus['users'] = $res[0]["users"];
+            }
+            $sql = ' SELECT COUNT(*) as posts FROM post';
+            $res = $db->query($sql);
+            if(isset($res) && $res[0]["posts"] > 0){
+                $totalStatus['posts'] = $res[0]["posts"];
+            }
+
+            return $totalStatus;
         }
 
         function finalConfirmed($id,$postid) {

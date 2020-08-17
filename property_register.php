@@ -150,7 +150,7 @@
                                             <option selected>Select Type</option>
                                               <option value="RC"> RC </option>
                                               <option value="Apartment">Apartment</option>
-                                              <option value="Resort">Resort</option>';
+                                              <option value="Resort">Resort</option></select>';
                                        
                                         }?>
                                   
@@ -181,25 +181,21 @@
                                 }
                                 fclose($handle);
                               } 
-                            if(isset($selectedProperty) && $queries["view"] == "1") {
-                                            echo '<div class="row"><label for="region" class="col-sm-2 col-form-label">Type</label><div class="col-sm-10"><input id="region" name="region"  placeholder="type" '.$readonly.' value="'.$selectedProperty["region"].'" class="form-control" required="required" type="text"></div></div>';
-                                        } else if(isset($queries["view"]) && $queries["view"] =="2") {
-
-                                            echo '<div class="row"><label for="type" class="col-sm-2 col-form-label">Type</label><div class="col-sm-10"><select id="region" name="region" class="form-control">
-                                            <option selected>Select Region</option>
-                                             '.
-                                             $tmpregionList
-                                             .'
-                                          </select></div></div>';
-                                        } 
-                                        else {
-                                            echo '<select id="region" name="region" class="form-control">
-                                            <option selected>Select Region</option>
-                                            '.
-                                            $tmpregionList
-                                            .'
-                                          </select>';
-                                        }?>
+                              if(isset($selectedProperty) && $queries["view"] == "1") {
+                                echo '<div class="row"><label for="region" class="col-sm-2 col-form-label">Type</label><div class="col-sm-10"><input id="region" name="region"  placeholder="type" '.$readonly.' value="'.$selectedProperty["region"].'" class="form-control" required="required" type="text"></div></div>';
+                            } else if(isset($queries["view"]) && $queries["view"] =="2") {
+      
+                                echo '<div class="row"><label for="type" class="col-sm-2 col-form-label">Type</label><div class="col-sm-10"><select id="region" name="region" class="form-control">
+                                <option selected>Select Region</option>
+                                 '.
+                                 $tmpregionList
+                                 .'
+                              </select></div></div>';
+                            } 
+                            else {
+                                echo ' <select id="region" name="region" class="form-control"><option selected>Select Region</option>'.$tmpregionList.' </select> ';
+                            }
+                           ?>
                                   
                         </div>
                         <div class="form-group col-md-6">
@@ -251,9 +247,7 @@
 							?>
 
                         </div>
-                        <div class="form-group col-md-6">
-                          
-                        </div>
+                      
                         <div class="form-group row col-md-12">
                           <label for="ownership" class="col-md-3 col-form-label text-center">OwnerShip:</label>
                           <div class="col-md-9">
@@ -266,11 +260,11 @@
                               }
                               else {
                                 echo ' <input type="File" class="form-control" name="ownership" id="ownership" placeholder="ownerShip">';
-                                echo ' <div class="thumb">
-                                <a href="data:image/base64,'.base64_encode($selectedProperty["ownership"]).'" class="fancybox" rel="ligthbox">
-                                <img class="ownership_container" src="data:image/jpeg;base64,' . base64_encode($selectedProperty["ownership"]) . '" width="238px" hight="256px" />
-                            </a>
-                            </div>';
+                            // //     echo ' <div class="thumb">
+                            // //     <a href="data:image/base64,'.base64_encode($selectedProperty["ownership"]).'" class="fancybox" rel="ligthbox">
+                            // //     <img class="ownership_container" src="data:image/jpeg;base64,' . base64_encode($selectedProperty["ownership"]) . '" width="238px" hight="256px" />
+                            // // </a>
+                            // </div>';
                               } 
                             ?>
                             </div>
@@ -286,13 +280,13 @@
                               </div>';
                               }
                               else {
-                                $encodeImage = base64_encode($selectedProperty["image"]);
+                                //$encodeImage = base64_encode($selectedProperty["image"]);
                                 echo ' <input type="File" class="form-control" name="image" id="image" placeholder="image">';
-                                echo ' <div class="thumb">
-                                <a href="data:image/gif;base64,'.$encodeImage.'" class="fancybox" rel="ligthbox">
-                                <img class="image_container"  src="data:image/jpeg;base64,' .$encodeImage. '" width="238px" hight="256px" />
-                                </a>
-                            </div>';
+                            //     echo ' <div class="thumb">
+                            //     <a href="data:image/gif;base64,'.$encodeImage.'" class="fancybox" rel="ligthbox">
+                            //     <img class="image_container"  src="data:image/jpeg;base64,' .$encodeImage. '" width="238px" hight="256px" />
+                            //     </a>
+                            // </div>';
                               } 
                             ?>
                             

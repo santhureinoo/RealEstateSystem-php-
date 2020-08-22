@@ -69,6 +69,8 @@ $picture = $data_user['photo'];
 								<?php
 										$currentConversationid;
 										$receiver;
+										$receiverPhoto;
+										$userPic;
 										foreach(getConversationsByID($_SESSION["userid"]) as $conversation){
 											$currentConversation="";
 											if($conversation["u1_id"] == $rec_id || $conversation["u2_id"] == $rec_id) {
@@ -77,18 +79,23 @@ $picture = $data_user['photo'];
 											}
 											if($conversation["u1_id"] != $_SESSION["userid"]) {
 												$receiverid = $conversation["u1_id"];
+												$userPic=  base64_encode($conversation["u1_photo"]);
 												$receiver = $conversation["u1_username"];
 											}
 											else {
 												$receiverid = $conversation["u2_id"];
+												$userPic=  base64_encode($conversation["u1_photo"]);
 												$receiver = $conversation["u2_username"];
 											}
+										
+											// $receiverPhoto  = base64_encode($userData["photo"]);
+											// echo $receiverPhoto;
 											$url= explode('?', $_SERVER["REQUEST_URI"], 2)[0];
 											echo '<li class="'.$currentConversation.'">
 													<a href="'.$url.'?rec_id='.$receiverid.'&rec_name='.$receiver.'">
 														<div class="d-flex bd-highlight">
 															<div class="img_cont">
-																<img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img">
+																<img src="data:image/jpeg;base64,'.$userPic.'" class="rounded-circle user_img">
 															</div>
 															<div class="user_info">
 																<span>'.$receiver.'</span>
@@ -132,7 +139,7 @@ $picture = $data_user['photo'];
 						<div class="card-header msg_head">
 							<div class="d-flex bd-highlight">
 								<div class="img_cont">
-									<img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img">
+									<img src="data:image/jpeg;base64,<?php echo $userPic;?>" class="rounded-circle user_img">
 									<span class="online_icon"></span>
 								</div>
 								<div class="user_info">

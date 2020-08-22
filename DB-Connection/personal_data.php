@@ -188,6 +188,10 @@
             if($db->update($sql) == 0 ) {
                 return "This Proposal Can't be Confirmed.";
             } 
+            $sql = "UPDATE property SET status='InActive' WHERE id = $id";
+            if($db->update($sql) == 0 ) {
+                return "This Proposal Can't be Confirmed.";
+            } 
         }
 
         function insertContract($proposalid,$amount,$from,$to,$members,$offline_evidence) {
@@ -211,7 +215,7 @@
 
         function getStatusesForIndex(){
             global $db;
-            $totalStatus = [];
+            $totalStatus = array("properties"=>0, "contracts"=>0, "users"=>0);
             $sql = ' SELECT COUNT(*) as properties FROM property';
             $res = $db->query($sql);
             if(isset($res) && $res[0]["properties"] > 0){
@@ -239,17 +243,15 @@
         function finalConfirmed($id,$postid) {
             global $db;
             $sql = "UPDATE proposal SET status='Completed' WHERE id =$id";
-            if($db->update($sql) == 0 ) {
-                return "This Proposal Can't be Completed.";
-            } 
-            else {
+            echo $db->update($sql);
+         
+              
                 $sql = "UPDATE proposal SET status='Expired' WHERE id != $id and postid =$postid";
                 $db->update($sql);
                 $sql = "UPDATE post SET status='Expired' WHERE id =$postid";
                 $db->update($sql);
                 $sql = "UPDATE property SET status='Occupied' WHERE id =(SELECT propertyid FROM post WHERE id =$postid)";
-                $db->update($sql);
-            }
+                 $db->update($sql);
         }
 
         function approveUser($userid,$adminid) {

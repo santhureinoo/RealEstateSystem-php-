@@ -16,8 +16,8 @@ if(!isset($_SESSION["current_user"])) {
     else if(isset($_POST["reject"])) {
       rejectProposal($_POST["reject"]);
     }
-    else if(isset($_POST["confirmFinal"])) {
-      header('Location: Contract.php?id='.$_POST["confirmFinal"].'&isOwner=y');
+    else if(isset($_POST["contract"])) {
+      header('Location: Contract.php?id='.$_POST["contract"].'&isOwner=y&noConfirm=y');
       // finalConfirmed($_POST["confirmFinal"],$_POST['postid']);
     }
     else if(isset($_POST["chat"]) && isset($_POST["chatname"]) && isset($_POST["chatid"])) {
@@ -167,7 +167,7 @@ if(!isset($_SESSION["current_user"])) {
                               $buttons =  $buttons . "<input type='hidden' value='$postid' name='postid'><button name='reject' value='$id' class='btn btn-danger'>Reject</button> <button name = 'confirmFinal' value='$id' class='btn btn-success'>Confirm Proposal </button><button  type='button' class='btn btn-primary ml-2' data-toggle='modal' data-target='#profile_".$id."'>View Profile</button><input type='hidden' name='chatid' value='$tenantid'><input type='hidden' name='chatname' value='$tenant'><button name='chat' class='btn btn-primary ml-2'>Chat</button>";
                             }
                             else if($status =="Completed") {
-                              $buttons =  $buttons . "<button name = 'contract' value='$id' class='btn btn-primary'>View Contract </button><button class='btn btn-primary ml-2' data-toggle='modal'  type='button' data-target='#profile_".$id."'>View Profile</button><input type='hidden' name='chatid' value='$tenantid'><input type='hidden' name='chatname' value='$tenant'><button name='chat' class='btn btn-primary ml-2'>Chat</button>.profile()";
+                              $buttons =  $buttons . "<button name = 'contract' value='$id' class='btn btn-primary'>View Contract </button><button class='btn btn-primary ml-2' data-toggle='modal'  type='button' data-target='#profile_".$id."'>View Profile</button><input type='hidden' name='chatid' value='$tenantid'><input type='hidden' name='chatname' value='$tenant'><button name='chat' class='btn btn-primary ml-2'>Chat</button>";
                             }
                              echo "
                                      <tr>

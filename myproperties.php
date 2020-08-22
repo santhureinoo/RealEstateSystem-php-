@@ -110,30 +110,6 @@ $viewProfile = false;
             <?php
                     if($viewProfile){
                       $readonly =true;
-                      $profile_data = getUserById($_POST["viewProfile"]);
-                      $encodedImage = base64_encode($profile_data["photo"]);
-                      $profile_status = getProfileStatus($_SESSION["userid"]);
-                      echo '
-                      <div class="modal fade" id="profileModal" tabindex="-1"  role="dialog" aria-labelledby="profileModal" aria-hidden="true">
-                      <div class="modal-dialog modal-lg mw-100 w-75" role="document" style="max-width: 80%;">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            ';
-                            include("profile_detail.php");
-                          echo '</div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                          </div>
-                        </div>
-                      </div>
-                      </div>
-                      ';
                     }
                     $result = getProperties($_SESSION["userid"]);
                     if($result != null) {
@@ -175,7 +151,39 @@ $viewProfile = false;
                           $buttons = "<form action='' method='post'><button type='submit' name='edit' value='$id' class='btn btn-primary'>Edit</button>";
                         }
                         else if($status=="Occupied") {
-                          $buttons = "<form action='' method='post'><button type='submit' name='viewProfile' value='$id' class='btn btn-primary'>View Profile</button>";     
+                          $profile_data = getProfileDataByProperty($id);
+                          $mod = '';
+                          if(isset($profile_data)){
+                            $encodedImage = base64_encode($profile_data["photo"]);
+                            $profile_status = getProfileStatus($profile_data["id"]);
+                            $readonly =true;
+                            ob_start();
+                              require "profile_detail.php";
+                          $content = ob_get_clean();  
+                            $mod =  '
+                            <div class="modal fade" id="modal_'.$id.'" tabindex="-1"  role="dialog" aria-labelledby="modal_'.$id.'" aria-hidden="true">
+                            <div class="modal-dialog modal-lg mw-100 w-75" role="document" style="max-width: 80%;">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  '.
+                                  $content
+                                . '</div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                              </div>
+                            </div>
+                            </div>
+                            ';
+                          }
+                       
+                          $buttons = "<form action='' method='post'><button type='button' name='viewProfile' data-toggle='modal' data-target='#modal_$id' class='btn btn-primary'>View Profile</button>".$mod;     
                         }
                         else { 
                           $deleteModal = ' 

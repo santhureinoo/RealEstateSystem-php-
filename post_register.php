@@ -1,5 +1,6 @@
 <?php
 	if(!isset($_SESSION)) {
+    ob_start();
 		session_start();
 	}
 	require_once("DB-Connection/property.php");
@@ -16,9 +17,6 @@
 		if(isset($queries['id'])) {
       $edit =true;
       $currentid = $queries['id'];
-      $selectedPost = getPostById($currentid);
-      $features = getAllPostFeature($selectedPost["id"]);
-      $images = getAllPostImage($selectedPost["id"]);
     }
     if(isset($queries['view'])){
       $edit =false;
@@ -41,7 +39,16 @@
     ));
 
     if($main_validate->passed()) {
-      addPost($_POST["postType"],$_POST["property"],$_POST["amount"],$_POST["description"],$_SESSION["userid"],$_POST["hidden_images"],$_POST["featureNames"],$_POST["amounts"]);
+      if(!isset($_POST["hidden_images"])){
+        $_POST["hidden_images"] = [];
+      }
+      if(!isset( $currentid )){
+        addPost($_POST["postType"],$_POST["property"],$_POST["amount"],$_POST["description"],$_SESSION["userid"],$_POST["hidden_images"],$_POST["featureNames"],$_POST["amounts"]);
+      }
+      else {
+        editPost($currentid,$_POST["property"],$_POST["postType"],$_POST["amount"],$_POST["description"],$_SESSION["userid"],$_POST["hidden_images"],$_POST["featureNames"],$_POST["amounts"]);
+      }
+      header("Location: myposts.php");
     }
     else {
         echo 'Validation errors:';
@@ -52,6 +59,12 @@
         }
         echo '</ul>';
     }
+    
+  }
+  if(isset($queries['id'])) {
+    $selectedPost = getPostById($currentid);
+    $features = getAllPostFeature($selectedPost["id"]);
+    $images = getAllPostImage($selectedPost["id"]);
   }
 ?>
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -130,7 +143,13 @@
                                 <select id="type" name='property' <?php echo !$edit? 'disabled':''; ?> class="form-control">
                                         <option selected>Select Your Property</option>
                                         <?php
-                                            $result = getPropertiesByUser(isset($selectedPost)?$selectedPost['propertyid']:0,$_SESSION['userid']);
+                                          if(isset($_SESSION['userid'])){
+                                            $result = getPropertiesByUser(isset($selectedPost)?$selectedPost['propertyid']:0,$_SESSION['userid'],true);
+                                          }
+                                          else {
+                                            $result = getPropertiesByUser(isset($selectedPost)?$selectedPost['propertyid']:0,$_SESSION['userid'],true);
+                                          }
+                                            
                                             foreach($result as $res) {
                                                   $id = $res["id"];
                                                   $selected = "";
@@ -156,9 +175,8 @@
                     <div class="form-group row">
                           <div class="col-md-12 ">
                           <select id="type" name='postType' <?php echo !$edit? 'disabled':''; ?> class="form-control">
-                                        <option selected>Rent Or Sale?</option>
-                                        <option>Rent</option>
-                                        <option>Sale</option>
+                                        <option <?php echo isset($selectedPost) && $selectedPost["postType"] === 'Rent'?"Selected":"";?>>Rent</option>
+                                        <option <?php echo isset($selectedPost) && $selectedPost["postType"] === 'Sale'?"Selected":"";?> >Sale</option>
                                 </select>
                           </div>
                    
@@ -175,13 +193,29 @@
                           <input type="file" class="form-control" id="images" name="images[]" <?php echo !$edit? 'hidden':''; ?> onchange="preview_images();" multiple/>
                       </div>
                     </div>
-                    <div class="cold-md-12 row p-3" id="image_preview"></div>
+                    <div class="cold-md-12 row p-3" id="image_preview">
+                    <?php
+     
+     if($edit && isset($images)) {
+       for($i=0;$i<count($images);$i++){
+        
+         echo ' 
+         <div id="preview_'.$i.'" class="col-md-3">
+         <input type="hidden" Id="hidden_image_"+curent_image_preview_index+ name="hidden_images[]" value="data:image/jpeg;base64,'.base64_encode($images[$i]['image']).'">
+               <button id="closeIcon" onclick="deletePreviewData(`preview_'.$i.'`)" type="button" class="position-absolute" style="right:0"><span>×</span></button>
+                   <img class="img-fluid" src="data:image/jpeg;base64,'.base64_encode($images[$i]['image']).'"></div>;
+         ';
+       } 
+      
+     }
+    ?>
+                    </div>
                   
                       <h3> Additional Features </h3>
-                        <div id="education_fields"  class="form-group col-md-12 ">
+                        <div id="all_features"  class="form-group col-md-12 ">
                                 
                         </div>
-                        <div class="form-group col-md-12 ">
+                        <div <?php echo !$edit? 'style="display:none;"':''; ?>  class="form-group col-md-12 ">
                               <div class='row'>
                               <div class="col nopadding">
                           <div class="form-group">
@@ -193,12 +227,39 @@
                             <input type="text" <?php echo !$edit? 'disabled':''; ?> class="form-control"  id="amounts" name="amounts[]" value="" placeholder="Amount">
                           </div>
                         </div>
-                        
+                        <script>
+                                  var room = 1;
+    function all_features(name,amount) {
+        room++;
+        var objTo = document.getElementById('all_features')
+        var divtest = document.createElement("div");
+      divtest.setAttribute("class", "form-group row removeclass"+room);
+      var rdiv = 'removeclass'+room;
+        var edit = '<?php echo $edit !== true? 'style="display:none;" ': 'style="display:block;" '; ?>';
+        divtest.innerHTML = '<div class="col nopadding"><div class="form-group"> <input type="text"  <?php echo !$edit? 'disabled':''; ?> class="form-control" id="featureNames" name="featureNames[]" value="'+name+'" placeholder="Name"></div></div><div class="col nopadding"><div class="form-group"> <input type="text" class="form-control"  <?php echo !$edit? 'disabled':''; ?> id="amounts" name="amounts[]" value="'+amount+'" placeholder="Amount"></div></div><div class="col nopadding"><div class="form-group"><div class="input-group"> <div class="input-group-btn"> <button class="btn btn-danger" type="button" '+edit+' onclick="remove_all_features('+ room +');"> Del </button></div></div></div></div><div class="clear"></div>';
+        objTo.appendChild(divtest); 
+           $('#featureNames').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+          },
+          {
+            name: 'current_features',
+            source: substringMatcher(current_features)
+          });
+        
+    }
+    <?php
+        foreach($features as $feature){
+            echo 'all_features("'.$feature["name"].'","'.$feature["amount"].'");';
+        }
+    ?>
+                          </script>
                         <div class="col nopadding">
                           <div class="form-group">
                             <div class="input-group">
                               <div class="input-group-btn">
-                                <button class="btn btn-success" <?php echo !$edit? 'disabled':''; ?> type="button"  onclick="education_fields();"> Add</button>
+                                <button class="btn btn-success" <?php echo !$edit? 'disabled':''; ?> type="button"  onclick="all_features('','');"> Add</button>
                               </div>
                             </div>
                           </div>
@@ -208,27 +269,13 @@
                               </div>
  
                     </div>
-                    <button type="submit" class="btnSubmit">Submit</button>
+                    <button <?php echo $edit!==true?"style='display:none;'":""; ?> type="submit" class="btnSubmit">Submit</button>
                 </div>
             </form>
         </div>
 
 <script>
-    <?php
-                      if($edit && isset($images)) {
-                        for($i=0;$i<count($images);$i++){
-                          echo ' 
-                          $("#image_preview").append("<div id="preview_'.$i.'" class="col-md-3">
-                          <input type="hidden" Id="hidden_image_"+curent_image_preview_index+ name="hidden_images[]">
-                                <button id="closeIcon" onclick="deletePreviewData(`preview_'.$i.'`)" type="button" class="position-absolute" style="right:0"><span>×</span></button>
-                                    <img class="img-fluid" src="'.$images[$i]['image'].'"></div>");
-                            //  getBase64(event.target.files[i],"#hidden_image_"+curent_image_preview_index);
-                              curent_image_preview_index++;
-                          ';
-                        } 
-                       
-                      }
-                     ?>
+    
       $('#featureNames').typeahead({
       hint: true,
       highlight: true,
@@ -259,27 +306,8 @@
         $('#city').append("<option value='"+val.city+"'>"+val.city+"</option>");
       });
       });
-      var room = 1;
-    function education_fields() {
-        room++;
-        var objTo = document.getElementById('education_fields')
-        var divtest = document.createElement("div");
-      divtest.setAttribute("class", "form-group row removeclass"+room);
-      var rdiv = 'removeclass'+room;
-        divtest.innerHTML = '<div class="col nopadding"><div class="form-group"> <input type="text" class="form-control" id="featureNames" name="featureNames[]" value="" placeholder="Name"></div></div><div class="col nopadding"><div class="form-group"> <input type="text" class="form-control" id="amounts" name="amounts[]" value="" placeholder="Amount"></div></div><div class="col nopadding"><div class="form-group"><div class="input-group"> <div class="input-group-btn"> <button class="btn btn-danger" type="button" onclick="remove_education_fields('+ room +');"> Del </button></div></div></div></div><div class="clear"></div>';
-        objTo.appendChild(divtest); 
-           $('#featureNames').typeahead({
-            hint: true,
-            highlight: true,
-            minLength: 1
-          },
-          {
-            name: 'current_features',
-            source: substringMatcher(current_features)
-          });
-        
-    }
-      function remove_education_fields(rid) {
+      function remove_all_features(rid) {
         $('.removeclass'+rid).remove();
       }
 </script>
+

@@ -189,7 +189,7 @@
 
         function getDisplayContract($proposalid){
             global $db;
-            $sql = "SELECT ou.id as ownerid, ou.userName as ownerName, ou.nrc as ownerNRC, CONCAT(ou.address,',',ou.city) as ownerAddress, tu.id as tenantid, tu.userName as tenantName, tu.nrc as tenantNRC, CONCAT(tu.address,',',tu.city) as tenantAddress,pr.city as pCity,pr.township as pTownship, pr.region as pRegion,pr.name as pName  FROM user ou INNER JOIN proposal p On ou.id = p.ownerid INNER JOIN user tu On tu.id = p.tenantid INNER JOIN post po On p.postid = po.id INNER JOIN property pr On pr.id = po.propertyid";
+            $sql = "SELECT po.postType as postType, ou.id as ownerid, ou.userName as ownerName, ou.nrc as ownerNRC, CONCAT(ou.address,',',ou.city) as ownerAddress, tu.id as tenantid, tu.userName as tenantName, tu.nrc as tenantNRC, CONCAT(tu.address,',',tu.city) as tenantAddress,pr.city as pCity,pr.township as pTownship, pr.region as pRegion,pr.name as pName  FROM user ou INNER JOIN proposal p On ou.id = p.ownerid INNER JOIN user tu On tu.id = p.tenantid INNER JOIN post po On p.postid = po.id INNER JOIN property pr On pr.id = po.propertyid";
             $result = $db->query($sql);
             return $result[0];
         }
@@ -210,7 +210,7 @@
 
         function getUserById($userid) {
             global $db;
-            $sql = "SELECT * FROM user WHERE id=$userid";
+            $sql = "SELECT * FROM user u WHERE u.id=$userid";
             $result = $db->query($sql);
             return $result[0];
         }
@@ -311,15 +311,16 @@
 
         function getBriefContracts() { 
             global $db;
-            $sql = "SELECT o.username as owner,t.username as tenant,c.from_date,c.to_date,c.created_at,c.status,c.id FROM Contract c INNER JOIN Proposal p ON c.proposalid=p.id INNER JOIN user o ON p.ownerid=o.id INNER JOIN user t ON p.tenantid=t.id WHERE c.status !='Deleted'";
+            $sql = "SELECT o.username as owner,t.username as tenant,c.from_date,c.to_date,c.created_at,c.status,c.id,c.proposalid FROM Contract c INNER JOIN Proposal p ON c.proposalid=p.id INNER JOIN user o ON p.ownerid=o.id INNER JOIN user t ON p.tenantid=t.id WHERE c.status !='Deleted'";
 
             $result=[];
             $resultSet = $db->query($sql) ;
             if($resultSet != null) {
                 foreach($db->query($sql) as $row) {
                     $id = $row["id"];
+                    $proposalid = $row["proposalid"];
                     if($row["status"] =="Active") {
-                        $buttons = ["buttons"=>"<form action='' method='post'><button name='viewContract' type='submit' value='$id' class='btn btn-primary'>VIew</button><button name='rejectContract' type='submit' value='$id' class='btn btn-danger ml-2'>Reject</button></form>"]; 
+                        $buttons = ["buttons"=>"<form action='' method='post'><button name='viewContract' type='submit' value='$proposalid' class='btn btn-primary'>VIew</button><button name='rejectContract' type='submit' value='$id' class='btn btn-danger ml-2'>Reject</button></form>"]; 
                     }
                     else if($row["status"] =="Reject") {
                         $buttons = ["buttons"=>"<form action='' method='post'><button name='viewContract' type='submit' value='$id' class='btn btn-primary'>View</button><button name='acceptContract' type='submit' value='$id' class='btn btn-danger ml-2'>Re-Accept</button></form>"]; 
@@ -354,10 +355,10 @@
                     
                 }
                 else if($row["status"] == "Waiting") {
-                    $buttons = ["buttons"=>"<form action='' method='post'><button name='approvePost' type='submit' value='$id' class='btn btn-success'>Confirm</button><button name='viewContract' type='submit' value='$id' class='btn btn-primary ml-2'>VIew</button><button name='deletePost' type='submit' value='$id' class='btn btn-danger ml-2'>Delete</button></form>"]; 
+                    $buttons = ["buttons"=>"<form action='' method='post'><button name='approvePost' type='submit' value='$id' class='btn btn-success'>Confirm</button><button name='viewPost' type='submit' value='$id' class='btn btn-primary ml-2'>VIew</button><button name='deletePost' type='submit' value='$id' class='btn btn-danger ml-2'>Delete</button></form>"]; 
                 }
                 else  {
-                    $buttons = ["buttons"=>"<form action='' method='post'><button name='viewContract' type='submit' value='$id' class='btn btn-primary'>VIew</button><button name='deletePost' type='submit' value='$id' class='btn btn-danger ml-2'>Delete</button></form>"]; 
+                    $buttons = ["buttons"=>"<form action='' method='post'><button name='viewPost' type='submit' value='$id' class='btn btn-primary'>VIew</button><button name='deletePost' type='submit' value='$id' class='btn btn-danger ml-2'>Delete</button></form>"]; 
                 }
                 $row = array_merge(array_slice($row,0,5),$buttons,array_slice($row,5));
                 array_push($result,$row);
@@ -370,6 +371,7 @@
         function profile($id,$row){
             $profile_data = getUserById($id);
             $encodedImage = base64_encode($profile_data["photo"]);
+            $profile_status = getProfileStatus($id);
             $readonly =true;
             ob_start();
                 require "../profile_detail.php";
@@ -431,11 +433,23 @@
             return $db->query($sql);
         }
         
-        function getPropertiesByUser($selectedPostId,$userid){
+        function getPropertiesByUser($selectedPostId,$userid,$isAdmin){
             global $db;
-            $sql  = "SELECT DISTINCT p.id,p.name FROM property p,post pt WHERE p.id NOT IN (SELECT propertyid FROM post) AND p.ownerid=$userid AND (p.id=$selectedPostId OR p.status !='Occupied') AND p.status !='Deleted'";
+          
+            if(!$isAdmin) {
+                $sql  = "SELECT DISTINCT p.id,p.name FROM property p,post pt WHERE p.id NOT IN (SELECT propertyid FROM post) AND p.ownerid=$userid AND p.id=$selectedPostId OR p.status !='Deleted'";
+            }else {
+                $sql  = "SELECT DISTINCT p.id,p.name FROM property p,post pt WHERE p.id NOT IN (SELECT propertyid FROM post) AND p.id=$selectedPostId OR p.status !='Deleted'";
+            }
             echo $sql;
             return $db->query($sql);
+        }
+
+        function getProfileDataByProperty($proid){
+            global $db;
+            $sql = "SELECT u.* FROM user u INNER JOIN proposal pl ON u.id = pl.tenantid INNER JOIN post pt ON pt.id = pl.postid INNER JOIN property pty ON pty.id = pt.propertyid WHERE pty.id=$proid";
+            $result = $db->query($sql);
+            return $result[0];
         }
 
         function getPropertyByID($id) {

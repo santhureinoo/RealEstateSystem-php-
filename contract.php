@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(!isset($_SESSION["current_user"])) {
+if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
     header('Location: login.php');
 }
     include("DB-Connection/personal_data.php");
@@ -30,6 +30,9 @@ if(!isset($_SESSION["current_user"])) {
             $proposal_detail = getProposalById($id);
             $contractDisplay = getDisplayContract($proposal_detail["id"]);
 			// $user_detail = getUserById($post_detail["ownerid"]);
+        }
+        if(isset($queries["noConfirm"])){
+            $noConfirm = true;
         }
         if(isset($queries['id']) && isset($queries['isOwner']) && $queries['isOwner'] == 'y') {
             $readOnlyOrNot = "readonly";
@@ -63,7 +66,7 @@ if(!isset($_SESSION["current_user"])) {
     <meta name="keywords" content="Colorlib Templates">
 
     <!-- Title Page-->
-    <title>Au Register Forms by Colorlib</title>
+    <title>Contract</title>
 
     <!-- Icons font CSS-->
     <link href="css/material-design-iconic-font.css" rel="stylesheet" media="all">
@@ -87,7 +90,7 @@ if(!isset($_SESSION["current_user"])) {
                 <div class="card-heading"></div>
                 <div class="card-body">
                     <h2 class="title">Landlord, Tenant Agreement Contract</h2>
-                    <h4 class="title text-right"><?php echo date('d-m-Y'); ?></h2>
+                    <h4 class="title text-right"><?php echo isset($contract_detail)?$contract_detail["created_at"]:date('d-m-Y'); ?></h2>
                             <div class="row">
                                 <div class="col-md-6">
                                         <h4> Landlord</h4>
@@ -167,13 +170,13 @@ if(!isset($_SESSION["current_user"])) {
                                     <div class="col-md-6">
                                             <h4>Transaction Information</h4>
                                             <div class="form-group row mt-3">
-                                                <label for="amount" class="col-sm-3 col-form-label">Amount (Kyats/Month)</label>
+                                                <label for="amount" class="col-sm-3 col-form-label">Amount (Kyats<?php echo isset($contractDisplay) && $contractDisplay["postType"] !== 'Sale'?"/Month":'';?>)</label>
                                                 <div class="col-sm-9">
                                                 <input type="text" <?php echo $readOnlyOrNot; ?> class="form-control" id="amount_txt" value="<?php echo isset($contract_detail)? $contract_detail["amount"]:$proposal_detail["initial_amount"];?>">
                                                   
                                             </div>
                                             </div>
-                                            <div class="form-group row">
+                                            <div class="form-group row " <?php echo $readOnlyOrNot === 'readonly'?'hidden':''; ?>>
                                                 <label for="duration" class="col-sm-3 col-form-label">Duration <br/>(Month,Year)</label>
                                                 <div class="col-sm-9 row">
                                                     <div class="col-sm-6"> <input type="email"  <?php echo $readOnlyOrNot; ?> class="form-control" id="month_txt" placeholder="Months"></div>
@@ -321,9 +324,13 @@ if(!isset($_SESSION["current_user"])) {
                                         $confirmOrSave=isset($contract_detail)?"Confirm": "Submit";
                                         $initialAmount = isset($contract_detail)? $contract_detail["amount"]:$proposal_detail["initial_amount"];
                                     //    echo '<form action="" method="POST">';
+                                        $buttonHide = '';
+                                        if (isset($noConfirm)){
+                                            $buttonHide = 'hidden';
+                                        }
                                         echo "<input type='hidden' name='amount' id='amount' value='".  $initialAmount."'><input type='hidden' name='toDate' id='toDate'><input type='hidden' name='fromDate' id='fromDate'><input type='hidden' name='member' id='member'>";
                                         echo " <input type='hidden' name='isconfirm' value='".$isContract."'>";
-                                        echo ' <input type="hidden" name="confirmOrSave" value="'.$confirmOrSave.'"><button id="confirm" class="btn btn--radius btn--green" '.$success .' name="confirm" value="'.$id.'" type="submit">'.$confirmOrSave.'</button>';
+                                        echo ' <input type="hidden" name="confirmOrSave" value="'.$confirmOrSave.'"><button '.$buttonHide.' id="confirm" class="btn btn--radius btn--green" '.$success .' name="confirm" value="'.$id.'" type="submit">'.$confirmOrSave.'</button>';
                                         echo '</form>';
                                 ?>
                                
@@ -348,6 +355,7 @@ if(!isset($_SESSION["current_user"])) {
         $(function() {
             $("#fromDate_txt").datepicker();
             $("#toDate_txt").datepicker();
+         
   var $tabButtonItem = $('#tab-button li'),
       $tabSelect = $('#tab-select'),
       $tabContents = $('.tab-contents'),
@@ -384,6 +392,8 @@ if(!isset($_SESSION["current_user"])) {
       $("#toDate").val(toDate);
   })
 
+  
+
    $("#fromDate_txt").change(function() {
     adjustDuration();
         var toDate = $("#toDate_txt").val();
@@ -406,6 +416,11 @@ if(!isset($_SESSION["current_user"])) {
         $('#year_txt').val(diffDuration.years());
     }
   }
+  <?php
+    if($readOnlyOrNot === 'readonly') {
+        echo "adjustDuration();";
+    }
+  ?>
 
   $('#month_txt').change(function(){
     var fromDate_txt = $("#fromDate_txt").val();

@@ -21,6 +21,10 @@
   else if(isset($_POST["viewPost"])) {
     header('Location: ../post_register.php?view=true&id='.$_POST["viewPost"]);
   }
+  else if(isset($_POST["viewContract"])) {
+    $_SESSION["adminAccess"] = true;
+    header('Location: ../Contract.php?id='.$_POST["viewContract"].'&isOwner=y&noConfirm=y');
+  }
   else if(isset($_POST["confirmProperty"])) {
     setPropertyActiveById($_POST["confirmProperty"]);
   }

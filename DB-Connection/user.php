@@ -22,7 +22,7 @@
             }
             
             $sql = "UPDATE user SET password='$password',".$photoPart."username= '$name',email='$email',ph_no='$ph_no',nrc='$nrc',address='$address',city='$city',job='$job',income=$income,relationship=$relationship,religion='$religion',family_members='$family_members' WHERE id=$userid";
-            
+            $db->update($sql);
         }
 
            

@@ -6,8 +6,16 @@
 
     function getConversationsByID($id) {
         global $db;
-        $sql = "SELECT c.id, u1.id as u1_id, u1.username as u1_username, u2.id as u2_id, u2.username as u2_username,c.status from conversation c INNER JOIN user u1 ON c.user1=u1.id INNER JOIN user u2 ON c.user2=u2.id WHERE (c.user1=$id OR c.user2=$id) AND c.status ='Active'";
+        $sql = "SELECT c.id, u1.id as u1_id, u1.username as u1_username,u1.photo as u1_photo,u2.photo as u2_photo, u2.id as u2_id, u2.username as u2_username,c.status from conversation c INNER JOIN user u1 ON c.user1=u1.id INNER JOIN user u2 ON c.user2=u2.id WHERE (c.user1=$id OR c.user2=$id) AND c.status ='Active'";
         return $db->query($sql);
+    }
+
+    function getChatUserById($userid) {
+        global $db;
+        $sql = "SELECT * FROM user WHERE id=$userid";
+        echo $sql;
+        $result = $db->query($sql);
+        return $result[0];
     }
 
     function checkExistingConversation($sender,$receiver) {

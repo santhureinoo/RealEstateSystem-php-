@@ -208,6 +208,18 @@
        } 
       
      }
+     else if(!$edit && isset($images)) {
+      for($i=0;$i<count($images);$i++){
+       
+        echo ' 
+        <div id="preview_'.$i.'" class="col-md-3">
+        <input type="hidden" Id="hidden_image_"+curent_image_preview_index+ name="hidden_images[]" value="data:image/jpeg;base64,'.base64_encode($images[$i]['image']).'">
+             
+                  <img class="img-fluid" src="data:image/jpeg;base64,'.base64_encode($images[$i]['image']).'"></div>;
+        ';
+      } 
+     
+    }
     ?>
                     </div>
                   

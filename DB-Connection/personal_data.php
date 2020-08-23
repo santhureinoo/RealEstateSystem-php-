@@ -194,7 +194,7 @@
             } 
         }
 
-        function insertContract($proposalid,$amount,$from,$to,$members,$offline_evidence) {
+        function insertContract($postType,$proposalid,$amount,$from,$to,$members,$offline_evidence) {
             global $db;
             $table_name = "contract";
             $from_date = date('Y-m-d',strtotime($from));
@@ -208,8 +208,10 @@
             if($today >= $from_date && $today <=$to_date) {
                     $status = "Active";
             }
+          
             $Array_sql = array("proposalid"=>$proposalid,"amount"=>$amount,"from_date"=>$from_date,"to_date"=>$to_date,"members"=>$members,"status"=>$status,"evidence"=>$offline_evidence,"created_at"=>date("Y-m-d"));
             $result = $db->insert($Array_sql,$table_name);
+            
             return $result;
         }
 
@@ -240,18 +242,22 @@
             return $totalStatus;
         }
 
-        function finalConfirmed($id,$postid) {
+        function finalConfirmed($id,$proposalid,$postid,$isSale) {
             global $db;
             $sql = "UPDATE proposal SET status='Completed' WHERE id =$id";
-            echo $db->update($sql);
-         
-              
+             $db->update($sql);
+
                 $sql = "UPDATE proposal SET status='Expired' WHERE id != $id and postid =$postid";
                 $db->update($sql);
                 $sql = "UPDATE post SET status='Expired' WHERE id =$postid";
                 $db->update($sql);
                 $sql = "UPDATE property SET status='Occupied' WHERE id =(SELECT propertyid FROM post WHERE id =$postid)";
                  $db->update($sql);
+                 if($isSale === 'Sale'){
+                    $sql = "UPDATE property SET ownerid = (SELECT tenantid FROM proposal WHERE id=$proposalid LIMIT 1) WHERE id = (SELECT post.propertyid FROM post INNER JOIN proposal On post.id = proposal.postid WHERE proposal.id = $proposalid LIMIT 1 )";
+                  
+                    $db->update($sql);
+                 }
         }
 
         function approveUser($userid,$adminid) {

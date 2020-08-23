@@ -323,10 +323,10 @@
                         $buttons = ["buttons"=>"<form action='' method='post'><button name='viewContract' type='submit' value='$proposalid' class='btn btn-primary'>VIew</button><button name='rejectContract' type='submit' value='$id' class='btn btn-danger ml-2'>Reject</button></form>"]; 
                     }
                     else if($row["status"] =="Reject") {
-                        $buttons = ["buttons"=>"<form action='' method='post'><button name='viewContract' type='submit' value='$id' class='btn btn-primary'>View</button><button name='acceptContract' type='submit' value='$id' class='btn btn-danger ml-2'>Re-Accept</button></form>"]; 
+                        $buttons = ["buttons"=>"<form action='' method='post'><button name='viewContract' type='submit' value='$proposalid' class='btn btn-primary'>View</button><button name='acceptContract' type='submit' value='$id' class='btn btn-danger ml-2'>Re-Accept</button></form>"]; 
                     }
                     else if($row["status"] =="Over") {
-                        $buttons = ["buttons"=>"<form action='' method='post'><button name='viewContract' type='submit' value='$id' class='btn btn-primary'>View</button></form>"]; 
+                        $buttons = ["buttons"=>"<form action='' method='post'><button name='viewContract' type='submit' value='$proposalid' class='btn btn-primary'>View</button></form>"]; 
                     }
                     $row = array_merge(array_slice($row,0,6),$buttons,array_slice($row,6));
                     array_push($result,$row);
@@ -448,6 +448,7 @@
         function getProfileDataByProperty($proid){
             global $db;
             $sql = "SELECT u.* FROM user u INNER JOIN proposal pl ON u.id = pl.tenantid INNER JOIN post pt ON pt.id = pl.postid INNER JOIN property pty ON pty.id = pt.propertyid WHERE pty.id=$proid";
+            // echo $sql;
             $result = $db->query($sql);
             return $result[0];
         }
@@ -489,7 +490,7 @@
             if(!empty($min) && !empty($max)) {
                 $extraFilter= $extraFilter . "AND (Post.initial_amount BETWEEN $min AND $max) ";
             }
-            $sql="SELECT Post.id as id,Property.area,Property.city,Property.township,Property.region,Property.address,Property.name,Property.image,Property.ownership, User.username,Post.initial_amount,Post.created_at FROM Post INNER JOIN Property ON Post.propertyid=Property.id INNER JOIN User ON Property.ownerid=User.id WHERE Post.status ='Active'  $extraFilter  LIMIT $amount OFFSET $offset ";
+            $sql="SELECT Post.id as id,Property.area,Property.city,Property.township,Property.region,Property.address,Property.name,Property.image,Property.ownership, User.username,Post.initial_amount,Post.created_at,Post.postType FROM Post INNER JOIN Property ON Post.propertyid=Property.id INNER JOIN User ON Property.ownerid=User.id WHERE Post.status ='Active'  $extraFilter  LIMIT $amount OFFSET $offset ";
             $resultSet = $db->query($sql);
             if(isset($resultSet)){
                         foreach($resultSet as $res) {
@@ -497,6 +498,7 @@
                             $encodedImage = base64_encode($res["image"]);
                             $subSql = "SELECT * FROM `post_features` as pf INNER JOIN feature as f ON pf.featureid=f.id where pf.postid=$id LIMIT 4";
                             $subResultSet = $db->query($subSql);
+                            $saleOrRent = $res["postType"] === "Sale"? "<div style='position:absolute;' class='sale-notic'>FOR SALE</div>  ": "<div style='position:absolute;' class='rent-notic'>FOR RENT</div>  ";
                             if(isset($subResultSet)) {
                                     $first_feature = isset($subResultSet[0])?' <p><i class="fa fa-check-circle-o"></i>'.$subResultSet[0]["amount"] .' ' .$subResultSet[0]["name"].'</p>':'';
                                     $second_feature  = isset($subResultSet[1])?' <p><i class="fa fa-check-circle-o"></i>'.$subResultSet[1]["amount"] .' ' .$subResultSet[1]["name"].'</p>':'';
@@ -508,7 +510,8 @@
                                 <!-- feature -->
                                 <div class="feature-item">
                                     <div class="feature-pic set-bg" style="background-image:url(data:image/png;base64,'.$encodedImage.');">     
-                                        <img class="img-fluid" src="data:image/png;base64,'.$encodedImage.'">
+                                    '.$saleOrRent.'    
+                                    <img class="img-fluid" src="data:image/png;base64,'.$encodedImage.'">
                                     </div>
                                     <div class="feature-text">
                                         <div class="text-center feature-title">
@@ -542,12 +545,15 @@
                         ';
                             }
                             else {
+                               
                                 echo '
                                 <div class="col-lg-4 col-md-6">
                                 <!-- feature -->
                                 <div class="feature-item">
                                     <div class="feature-pic set-bg" style="background-image:url(data:image/png;base64,'.$encodedImage.');">     
-                                        <img class="img-fluid" src="data:image/png;base64,'.$encodedImage.'">
+                                    '.$saleOrRent.'  
+                                    <img class="img-fluid" src="data:image/png;base64,'.$encodedImage.'">
+                                        
                                     </div>
                                     <div class="feature-text">
                                         <div class="text-center feature-title">

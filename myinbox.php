@@ -10,14 +10,17 @@ if(!isset($_SESSION["current_user"])) {
     if(isset($_POST["confirm"]) && isset($_POST["postid"])) {
       approveProposal($_POST["confirm"],$_POST['postid']);
     }
+    else if(isset($_POST["contract"])){
+      header('Location: Contract.php?id='.$_POST["contract"].'&isOwner=y&noConfirm=y');
+    }
     else if(isset($_POST["reject_Approved"]) && isset($_POST["postid"])) {
       rejectApprovedProposal($_POST["reject_Approved"],$_POST['postid']);
     }
     else if(isset($_POST["reject"])) {
       rejectProposal($_POST["reject"]);
     }
-    else if(isset($_POST["contract"])) {
-      header('Location: Contract.php?id='.$_POST["contract"].'&isOwner=y&noConfirm=y');
+    else if(isset($_POST["confirmFinal"])) {
+      header('Location: Contract.php?id='.$_POST["confirmFinal"].'&isOwner=y');
       // finalConfirmed($_POST["confirmFinal"],$_POST['postid']);
     }
     else if(isset($_POST["chat"]) && isset($_POST["chatname"]) && isset($_POST["chatid"])) {

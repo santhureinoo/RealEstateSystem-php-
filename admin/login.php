@@ -3,8 +3,17 @@
     	include("../DB-Connection/property.php");
       require("../DB-Connection/login.php");
 
+      if(isset($_SERVER['QUERY_STRING'])) {
+        
+        $queries = array();
+        parse_str($_SERVER['QUERY_STRING'], $queries);
+        if(isset($queries['logout'])) {
+          logout();
+        }
+      }
+
       if(isset($_POST["password"]) && isset($_POST["email"])) {
-        adminLogin($_POST["password"],$_POST["email"]);
+        $result =  adminLogin($_POST["password"],$_POST["email"]);
       }
 ?>
 <!DOCTYPE html>
@@ -31,6 +40,11 @@
 <div class="login-box">
   <div class="login-logo">
     <a href="index2.html"><b>Admin</b>LTE</a>
+    <?php
+        if(isset($result) && $result !== '') {
+          echo "<h4 style='color:red;'>$result</h4>";
+        }
+    ?>
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -85,9 +99,9 @@
       <!-- <p class="mb-1">
         <a href="forgot-password.php">I forgot my password</a>
       </p> -->
-      <p class="mb-0">
+      <!-- <p class="mb-0">
         <a href="register.php" class="text-center">Register a new admin</a>
-      </p>
+      </p> -->
     </div>
     <!-- /.login-card-body -->
   </div>

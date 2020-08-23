@@ -8,13 +8,12 @@
         global $db;
         $sql = "SELECT id,username,email FROM user where email='$email' AND password='$password' AND status='Active'";
        $result = $db->query($sql);;
-       if($result != "No Data" && count($result) > 0) {
+       if($result != "" && count($result) > 0) {
          session_start();
         $_SESSION["current_user"] =$result[0]["username"];
         $_SESSION['email']= $result[0]['email'];
         $_SESSION['userid'] = $result[0]['id'];
         header('Location: index.php');
-          echo$result[0]["username"];
        }
        else {
          return "Username or Password Incorrect, Please Try Again!";
@@ -23,15 +22,13 @@
     function adminLogin($password,$email) {
       global $db;
         $sql = "SELECT id,username,email FROM admin where email='$email' AND password='$password'";
-        echo $sql;
        $result = $db->query($sql);
-       if($result != "No Data" && count($result) > 0) {
+       if($result != null && count($result) > 0) {
          session_start();
         $_SESSION["current_admin"] =$result[0]["username"];
         $_SESSION['admin_email']= $result[0]['email'];
         $_SESSION['admin_userid'] = $result[0]['id'];
         header('Location: index.php');
-          echo$result[0]["username"];
        }
        else {
          return "Username or Password Incorrect, Please Try Again!";
@@ -39,7 +36,7 @@
     }
     function logout() {
       session_destroy();
-      header('Location: index.php');
+      header('Location: login.php');
     }
 
     function addUser($profile,$username,$email,$password,$address,$city,$phone,$nrc,$nrc_front,$nrc_back,$relation,$religion,$job,$income,$members){

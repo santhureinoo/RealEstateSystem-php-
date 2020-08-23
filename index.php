@@ -210,10 +210,12 @@
 								</div>
 								<div class="row">';
 							foreach($latestPosts as $post) {
+								$saleOrRent = $post["postType"] === "Sale"? "<div style='position:absolute;' class='sale-notic'>FOR SALE</div>  ": "<div style='position:absolute;' class='rent-notic'>FOR RENT</div>  ";
 								$encodedImage = base64_encode($post["image"]);
 									echo '
 									<div class="col-md-4">
 										<div class="propertie-item set-bg">
+										'.$saleOrRent.'
 											<img src="data:image/jpeg;base64,'.$encodedImage.'" style=" display: block;
 											width: 100vw;
 											height: 100vh;

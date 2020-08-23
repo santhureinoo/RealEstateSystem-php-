@@ -12,13 +12,19 @@
     
     include("DB-Connection/property.php");
     include("DB-Connection/login.php");
-    if(isset($_POST["cancel"])){
-      header("Location: myproperties.php");
-    }
     if(isset($_SERVER['QUERY_STRING'])) {
       $queries = array();
       $readonly = "readonly";
       parse_str($_SERVER['QUERY_STRING'], $queries);
+      if(isset($_POST["cancel"])){
+        if($queries["view"] == "1") {
+          header("Location: admin/dataTable.php?name=properties");
+        }
+        else if ($queries["view"] == "2") {
+         header("Location: myproperties.php");
+        }
+       
+      }
       if(isset($_SESSION["userid"])) {
         $id = $_SESSION["userid"];
       }
@@ -39,6 +45,11 @@
           $selectedProperty = getPropertyByID($propertyid);
       }
       
+    }
+    else {
+      if(isset($_POST["cancel"])){
+        header("Location: myproperties.php");
+      }
     }
 
   //   if(isset($_POST['propertyName']) && isset($_POST['address']) && isset($_POST['area']) &&

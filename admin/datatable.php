@@ -1,7 +1,8 @@
 <?php 
-	if(!isset($_SESSION)) {
-		session_start();
-  }
+ session_start();
+ if(!isset($_SESSION["current_admin"])) {
+   header('Location: ../index.php');
+ }
   $data = "";
   $columns = "";
   $buttons="";
@@ -129,7 +130,7 @@
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="#">
-            Admin
+          Welcome, <?php echo $_SESSION["current_admin"];?>
             <!-- <i class="far fa-bell"></i>
             <span class="badge badge-warning navbar-badge">15</span> -->
           </a>
@@ -141,7 +142,7 @@
                 Home
             </a>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">
+            <a href="login.php?logout=y" class="dropdown-item">
               <i class="fas fa-users mr-2"></i> 
              Logout
             </a>

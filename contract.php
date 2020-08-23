@@ -10,14 +10,17 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
     if(isset($_POST["confirm"]) && isset($_POST["isconfirm"])){
         if( $_POST['isconfirm']) {
             confirmApprovedProposal($_POST["confirm"]);
-            insertContract($_POST["confirm"],$_POST["amount"],$_POST["fromDate"],$_POST["toDate"],$_POST["member"],$_FILES["offlineEvidence"]);   
-            header('Location: myproposals.php');
+            insertContract($_POST["postType"],$_POST["confirm"],$_POST["amount"],$_POST["fromDate"],$_POST["toDate"],$_POST["member"],$_FILES["offlineEvidence"]);   
+          //  header('Location: myproposals.php');
         }
         else {
             $confirm = $_POST['confirm'];
             $postid = getProposalById($confirm)["postid"];
+            $proposalid = getProposalById($confirm)["id"];
+            $postType = getProposalById($confirm)["postType"];
             echo $postid. ' and ' . $confirm;
-            finalConfirmed($confirm,$postid);
+            finalConfirmed($confirm,$proposalid,$postid,$postType);
+            header('location:myinbox.php');
         }
         
     }
@@ -26,10 +29,10 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
 		$queries = array();
 		parse_str($_SERVER['QUERY_STRING'], $queries);
 		if(isset($queries['id'])) {
-		  	$id = $queries['id'];
-            $proposal_detail = getProposalById($id);
+              $id = $queries['id'];
+             $proposal_detail = getProposalById($id);
             $contractDisplay = getDisplayContract($proposal_detail["id"]);
-			// $user_detail = getUserById($post_detail["ownerid"]);
+			$user_detail = getUserById($proposal_detail["ownerid"]);
         }
         if(isset($queries["noConfirm"])){
             $noConfirm = true;
@@ -38,9 +41,9 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
             $readOnlyOrNot = "readonly";
             $id = $queries['id'];
           $proposal_detail = getProposalById($id);
-          $contract_detail = getContractById($id);
+           $contract_detail = getContractById($id);
           $contractDisplay = getDisplayContract($proposal_detail["id"]);
-          // $user_detail = getUserById($post_detail["ownerid"]);
+          $user_detail = getUserById($proposal_detail["ownerid"]);
       }
         else {
             $readOnlyOrNot = "";
@@ -176,14 +179,14 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
                                                   
                                             </div>
                                             </div>
-                                            <div class="form-group row " <?php echo $readOnlyOrNot === 'readonly'?'hidden':''; ?>>
+                                            <div class="form-group row " <?php echo $readOnlyOrNot === 'readonly' || (isset($contractDisplay) && $contractDisplay["postType"] === 'Sale')?'hidden':''; ?>>
                                                 <label for="duration" class="col-sm-3 col-form-label">Duration <br/>(Month,Year)</label>
                                                 <div class="col-sm-9 row">
                                                     <div class="col-sm-6"> <input type="email"  <?php echo $readOnlyOrNot; ?> class="form-control" id="month_txt" placeholder="Months"></div>
                                                     <div class="col-sm-6"><input type="email"  <?php echo $readOnlyOrNot; ?> class="form-control" id="year_txt" placeholder="Years"></div>                                            
                                                 </div> 
                                             </div>
-                                            <div class="form-group row">
+                                            <div class="form-group row"<?php echo $readOnlyOrNot === 'readonly' || (isset($contractDisplay) && $contractDisplay["postType"] === 'Sale')?'hidden':''; ?>>
                                                 <label for="duration" class="col-sm-3 col-form-label">From</label>
                                                 <div class="col-sm-9">
                                                         <input  id="fromDate_txt" class="<?php if($readOnlyOrNot == ""){
@@ -196,7 +199,7 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
                                                         <!-- <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i> -->
                                                 </div>
                                             </div>
-                                            <div class="form-group row">
+                                            <div class="form-group row " <?php echo $readOnlyOrNot === 'readonly' || (isset($contractDisplay) && $contractDisplay["postType"] === 'Sale')?'hidden':''; ?>>
                                                 <label for="toDate_txt" class="col-sm-3 col-form-label">To</label>
                                                 <div class="col-sm-9">
                                                         <input id="toDate_txt" class="<?php if($readOnlyOrNot == ""){
@@ -330,6 +333,7 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
                                         }
                                         echo "<input type='hidden' name='amount' id='amount' value='".  $initialAmount."'><input type='hidden' name='toDate' id='toDate'><input type='hidden' name='fromDate' id='fromDate'><input type='hidden' name='member' id='member'>";
                                         echo " <input type='hidden' name='isconfirm' value='".$isContract."'>";
+                                        echo '<input type="hidden" name="postType" value="'.$contractDisplay["postType"].'">';
                                         echo ' <input type="hidden" name="confirmOrSave" value="'.$confirmOrSave.'"><button '.$buttonHide.' id="confirm" class="btn btn--radius btn--green" '.$success .' name="confirm" value="'.$id.'" type="submit">'.$confirmOrSave.'</button>';
                                         echo '</form>';
                                 ?>

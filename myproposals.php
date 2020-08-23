@@ -14,6 +14,9 @@ if(!isset($_SESSION["current_user"])) {
     else if(isset($_POST["contract"])){
       header('Location: Contract.php?id='.$_POST["contract"].'&isOwner=y&noConfirm=y');
     }
+    else if(isset($_POST["confirm"])){
+      header('Location: Contract.php?id='.$_POST["confirm"].'&isOwner=y');
+    }
     else if(isset($_POST["chat"]) && isset($_POST["chatname"]) && isset($_POST["chatid"])) {
       header('Location: private_chat/chat_new.php?rec_id='.$_POST["chatid"].'&rec_name='.$_POST["chatname"]);
     }

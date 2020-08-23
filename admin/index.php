@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <?php 
-  	if(!isset($_SESSION)) {
-      session_start();
+    session_start();
+  	if(!isset($_SESSION["current_admin"])) {
+      header('Location: ../index.php');
     }
   include("../DB-Connection/property.php");
   include("../DB-Connection/login.php");
@@ -55,8 +56,7 @@
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="#">
-            Admin
-            <!-- <i class="far fa-bell"></i>
+            Welcome, <?php echo $_SESSION["current_admin"];?>            <!-- <i class="far fa-bell"></i>
             <span class="badge badge-warning navbar-badge">15</span> -->
           </a>
           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">

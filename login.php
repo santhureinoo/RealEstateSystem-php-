@@ -6,7 +6,7 @@
 	include("DB-Connection/property.php");
     include("DB-Connection/login.php");
     if(isset($_POST['signin'])){
-        login($_POST['signin-email'],$_POST['signin-password']);
+       $result =  login($_POST['signin-email'],$_POST['signin-password']);
 }
     if(isset($_SERVER['QUERY_STRING'])) {
 		$queries = array();
@@ -44,6 +44,9 @@
             echo 'style="display:none;"';
         } ?>>
             <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Sign in</h1>
+            <?php if(isset($result)){
+                      echo "<h4 style='color:red;'>$result</h4>";
+            }?>
             <input type="email" id="inputEmail" name='signin-email' class="form-control mt-2 mb-2" placeholder="Email address" required="" autofocus="">
             <input type="password" id="inputPassword" name='signin-password' class="form-control mt-2 mb-2" placeholder="Password" required="">
             

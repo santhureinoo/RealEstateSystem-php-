@@ -6,7 +6,7 @@
         function getLatestPost() {
             global $db;
             $today = date('Y-m-d');
-            $sql="SELECT p.id,p.description,pt.name,pt.address,pt.city,p.initial_amount,pt.image FROM post p INNER JOIN property pt ON p.propertyid = pt.id WHERE p.status ='Active' and p.created_at >= $today LIMIT 6";
+            $sql="SELECT p.id,p.description,pt.name,pt.address,pt.city,p.initial_amount,pt.image,p.postType FROM post p INNER JOIN property pt ON p.propertyid = pt.id WHERE p.status ='Active' and p.created_at >= $today LIMIT 6";
 
             return $db->query($sql);
 
@@ -67,6 +67,7 @@
                             $encodedImage = base64_encode($res["image"]);
                             $subSql = "SELECT * FROM `post_features` as pf INNER JOIN feature as f ON pf.featureid=f.id where pf.postid=$id LIMIT 4";
                             $subResultSet = $db->query($subSql);
+                            $saleOrRent = $post["postType"] === "Sale"? "<div style='position:absolute;' class='sale-notic'>FOR SALE</div>  ": "<div style='position:absolute;' class='rent-notic'>FOR RENT</div>  ";
                             if(isset($subResultSet)) {
                                     $first_feature = isset($subResultSet[0])?' <p><i class="fa fa-check-circle-o"></i>'.$subResultSet[0]["amount"] .' ' .$subResultSet[0]["name"].'</p>':'';
                                     $second_feature  = isset($subResultSet[1])?' <p><i class="fa fa-check-circle-o"></i>'.$subResultSet[1]["amount"] .' ' .$subResultSet[1]["name"].'</p>':'';
@@ -78,7 +79,7 @@
                                 <!-- feature -->
                                 <div class="feature-item">
                                     <div class="feature-pic set-bg" style="background-image:url(data:image/png;base64,'.$encodedImage.');">     
-                                       
+                                        '.$saleOrRent.' 
                                         <img class="img-fluid" src="data:image/png;base64,'.$encodedImage.'">
                                     </div>
                                     <div class="feature-text">

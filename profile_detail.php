@@ -1,4 +1,4 @@
-
+<link rel="stylesheet" href="css/jquery.fancybox.css" />
 <div class="container">
     <div class="row mt-3">
   		<div class="col-sm-3"><!--left col-->
@@ -19,7 +19,11 @@
             <li class="list-group-item text-right"><span class="pull-left"><strong>Contracts</strong></span> <?php echo $profile_status["contract"]; ?></li>
             <li class="list-group-item text-right"><span class="pull-left"><strong>Posts</strong></span> <?php echo $profile_status["post"]; ?></li>
           </ul> 
-          
+          <div class="mt-3">
+          <a class='fancybox' rel='album' href="data:image/gif;base64,<?php echo base64_encode($profile_data["nrc_back_photo"])?>"> <img src="data:image/jpeg;base64,<?php echo base64_encode($profile_data["nrc_back_photo"])?>" alt="..." class="img-thumbnail"></a>
+          <a class='fancybox' rel='album' href="data:image/gif;base64,<?php echo base64_encode($profile_data["nrc_front_photo"])?>"> <img src="data:image/jpeg;base64,<?php echo base64_encode($profile_data["nrc_front_photo"])?>" alt="..." class="img-thumbnail"></a>    
+          </div>
+        
         </div><!--/col-3-->
     	<div class="col-sm-9">
           <div class="tab-content">
@@ -30,7 +34,7 @@
                           
                           <div class="col-xs-6">
                               <label for="first_name"><h4>Name</h4></label>
-                              <input type="text" <?php echo $readonly?"readonly":" id='username'"?> class="form-control" name="username" placeholder="User Name" title="enter your name if any." value="<?php echo $profile_data["username"]?>">
+                              <input required type="text" <?php echo $readonly?"readonly":" id='username'"?> class="form-control" name="username" placeholder="User Name" title="enter your name if any." value="<?php echo $profile_data["username"]?>">
                           </div>
                       </div>
                       <div class="form-group">
@@ -137,8 +141,42 @@
                             </div>
                       </div>
                       
-              	</form>
-              
+                  </form>
+                  <!-- <script src="js/jquery-3.2.1.min.js"></script>
+                  <script src="js/jquery.validate.min.js"></script> -->
+                  <script src="js/jquery-1.10.2.min.js"></script>
+                <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
+                <link rel="stylesheet" href="css/magnific-popup.css" type="text/css" media="screen" />
+                <script type="text/javascript" src="js/magnific-popup.min.js"></script>
+                  <script>
+                      $(document).ready(function($) {
+                        $('.fancybox').magnificPopup({
+                                type: 'image'
+                                // other options
+                        });
+                        // validate the comment form when it is submitted
+                        $("#registrationForm").validate({
+                                rules: {
+                                username: {
+                                required: true,
+                                minlength: 3,
+                                letters: true
+                                },
+                                email: {
+                                required: true,
+                                email: true
+                                }
+                            },
+                            messages: {
+                                name: "Please specify your name (only letters and spaces are allowed)",
+                                email: "Please specify a valid email address"
+                            },
+                        }); // <-- REMOVE THIS
+
+                        // validate signup form on keyup and submit
+                        $("#registrationForm").validate();});
+                        
+                </script>
               <hr>
               
              </div><!--/tab-pane-->

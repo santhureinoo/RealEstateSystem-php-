@@ -7,6 +7,12 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
     include("DB-Connection/property.php");
 
     $contractDisplay;
+    $invoice_no;
+    if(isset($_REQUEST["invoice_no"])){
+        $invoice_no = $_REQUEST["invoice_no"];
+        echo $invoice_no;
+    }
+   
     if(isset($_POST["confirm"]) && isset($_POST["isconfirm"])){
         if( $_POST['isconfirm']) {
             confirmApprovedProposal($_POST["confirm"]);
@@ -257,19 +263,25 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
                                                 $payment_description  = $proposal_detail["name"];
                                                 $order_id  = time();
                                                 $currency = "104";
-                                                $amount  =sprintf('%012d', $proposal_detail["initial_amount"]);
+                                                $amount  = sprintf('%012d', $proposal_detail["initial_amount"]);
                                                 
                                                 //Request information
                                                 $version = "8.5";	
                                                 $payment_url = "https://demo2.2c2p.com/2C2PFrontEnd/RedirectV3/payment";
-                                                $result_url_1 = "http://localhost/V3_UI_PHP_JT01_devPortal_v2.0/V3_UI_PHP_JT01_devPortal_v2.0/result.php";
+                                                $result_url_1 = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+                                                // $payment_url = "https://demo2.2c2p.com/2C2PFrontEnd/RedirectV3/payment";
+                                                // $result_url_1 = "http://localhost/V3_UI_PHP_JT01_devPortal_v2.0/V3_UI_PHP_JT01_devPortal_v2.0/result.php";
 
+                                                //Construct signature string
                                                 //Construct signature string
                                                 $params = $version.$merchant_id.$payment_description.$order_id.$currency.$amount.$result_url_1;
                                                 $hash_value = hash_hmac('sha256',$params, $secret_key,false);	//Compute hash value
-    
+                                                // $params = $version.$merchant_id.$payment_description.$order_id.$currency.$amount.$result_url_1;
+                                                // $hash_value = hash_hmac('sha256',$params, $secret_key,false);	//Compute hash value
+                                                $params = $version.$merchant_id.$payment_description.$order_id.$currency.$amount.$result_url_1;
+                                                $hash_value = hash_hmac('sha256',$params, $secret_key,false);	//Compute hash value
                                                 echo '
-                                                <form id="myform" method="post" action="'.$payment_url.' enctype="multipart/form-data">
+                                                <form id="myform" method="post" action="'.$payment_url.'" enctype="multipart/form-data">
                                                     <input type="hidden" name="version" value="'.$version.'"/>
                                                     <input type="hidden" name="merchant_id" value="'.$merchant_id.'"/>
                                                     <input type="hidden" name="currency" value="'.$currency.'"/>
@@ -294,7 +306,12 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
                                                             </div>
                                                         </div>
                                                     <input class="btn btn-success" type="submit" name="submit" value="Confirm" />
-                                                </form> ';	 
+                                                </form>
+                                                
+                                                <script type="text/javascript">
+                                                document.forms.myform.submit();
+                                            </script>
+                                                ';	 
                                         ?>
                                     </div>
                                     <form action="" method="POST" enctype="multipart/form-data">
@@ -317,7 +334,7 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
                                         }
                                 ?>
                                 <?php 
-                                        $success= isset($contract_detail) || isset($_REQUEST["payment_status"])?"":"disabled";
+                                        $success= isset($contract_detail) || isset($_REQUEST["payment_status"]) || isset($invoice_no)?"":"disabled";
                                         if(isset($contract_detail)){  
                                             $isContract= false ;
                                         }
@@ -334,6 +351,9 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
                                         echo "<input type='hidden' name='amount' id='amount' value='".  $initialAmount."'><input type='hidden' name='toDate' id='toDate'><input type='hidden' name='fromDate' id='fromDate'><input type='hidden' name='member' id='member'>";
                                         echo " <input type='hidden' name='isconfirm' value='".$isContract."'>";
                                         echo '<input type="hidden" name="postType" value="'.$contractDisplay["postType"].'">';
+                                        if(isset($invoice_no)){
+                                            echo $invoice_no;
+                                        }
                                         echo ' <input type="hidden" name="confirmOrSave" value="'.$confirmOrSave.'"><button '.$buttonHide.' id="confirm" class="btn btn--radius btn--green" '.$success .' name="confirm" value="'.$id.'" type="submit">'.$confirmOrSave.'</button>';
                                         echo '</form>';
                                 ?>

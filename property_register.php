@@ -1,5 +1,6 @@
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <link href="css/property-register.css"></link>
+<link href="css/validationEngine.jquery.css" rel="stylesheet" id="bootstrap-css">
 <link href="css/fancybox.min.css"></link>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -85,18 +86,18 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                         <?php if(isset($selectedProperty)) {
-                              echo ' <div class="row"><input type="hidden" name="status" value="'.$selectedProperty["status"].'"><label for="propertyName" class="col-sm-2 col-form-label">Name</label><div class="col-sm-10"><input type="text" class="form-control" '.$readonly.' name="propertyName" value="'.$selectedProperty["name"].'" id="name" placeholder="Name/No"></div></div>';
+                              echo ' <div class="row"><input type="hidden" name="status" value="'.$selectedProperty["status"].'"><label for="propertyName" class="col-sm-2 col-form-label">Name</label><div class="col-sm-10"><input type="text" class="validate[required] form-control" '.$readonly.' name="propertyName" value="'.$selectedProperty["name"].'" id="name" placeholder="Name/No"></div></div>';
                           }
                           else {
-                              echo '<input type="text" class="form-control" name="propertyName" id="name" placeholder="Name/No">';
+                              echo '<input type="text" class="validate[required] form-control" name="propertyName" id="name" placeholder="Name/No">';
                           } ?>
                         </div>
                         <div class="form-group col-md-6">
                           <?php if(isset($selectedProperty)) {
-                              echo ' <div class="row"><label for="address" class="col-sm-2 col-form-label">Address</label><div class="col-sm-10"><input type="text" class="form-control" '.$readonly.' name="address" value="'.$selectedProperty["address"].'" id="address" placeholder="Address"></div></div>';
+                              echo ' <div class="row"><label for="address" class="col-sm-2 col-form-label">Address</label><div class="col-sm-10"><input type="text" class="validate[required] form-control" '.$readonly.' name="address" value="'.$selectedProperty["address"].'" id="address" placeholder="Address"></div></div>';
                           }
                           else {
-                              echo '<input type="text" class="form-control" name="address" id="address" placeholder="Address">';
+                              echo '<input type="text" class="validate[required] form-control" name="address" id="address" placeholder="Address">';
                           }
                            ?>      
                         </div>
@@ -104,21 +105,21 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                         <?php if(isset($selectedProperty)) {
-                            echo '<div class="row"><label for="area" class="col-sm-2 col-form-label">Area</label><div class="col-sm-10"><input id="area" name="area" placeholder="Area (Square Feet)" '.$readonly.' value="'.$selectedProperty["area"].'" class="form-control" required="required" type="text"></div></div>';
+                            echo '<div class="row"><label for="area" class="col-sm-2 col-form-label">Area</label><div class="col-sm-10"><input id="area" name="area" placeholder="Area (Square Feet)" '.$readonly.' value="'.$selectedProperty["area"].'" class="validate[required,custom[number]] form-control" required="required" type="text"></div></div>';
                           }
                           else {
-                            echo '<input id="area" name="area" placeholder="Area (Square Feet)" class="form-control" required="required" type="text">';
+                            echo '<input id="area" name="area" placeholder="Area (Square Feet)" class="validate[required,custom[number]] form-control"  type="text">';
                           }
                         ?>
                         </div>
                         <div class="form-group col-md-6">
                                 <?php if(isset($selectedProperty) && $queries["view"] == "1") {
-                                    echo '<div class="row"><label for="city" class="col-sm-2 col-form-label">City</label><div class="col-sm-10"><input id="city" name="city" placeholder="City" '.$readonly.' value="'.$selectedProperty["city"].'" class="form-control" required="required" type="text"></div></div>';
+                                    echo '<div class="row"><label for="city" class="col-sm-2 col-form-label">City</label><div class="col-sm-10"><input id="city" name="city" placeholder="City" '.$readonly.' value="'.$selectedProperty["city"].'" class=" validate[required] form-control" required="required" type="text"></div></div>';
                                 }else if(isset($selectedProperty) && $queries["view"] == "2") {
-                                  echo '<div class="row"><label for="city" class="col-sm-2 col-form-label">City</label><div class="col-sm-10"> <select id="city" name="city" class="form-control"></select></div></div>';
+                                  echo '<div class="row"><label for="city" class="col-sm-2 col-form-label">City</label><div class="col-sm-10"> <select id="city" name="city" class="validate[required] form-control"></select></div></div>';
                                 } 
                                 else {
-                                    echo ' <select id="city" name="city" class="form-control"></select>';
+                                    echo ' <select id="city" name="city" class="validate[required] form-control"></select>';
                                 }
                                   ?>
                                  
@@ -127,7 +128,7 @@
                             <?php if(isset($selectedProperty)) {
                                         echo '<div class="row"><label for="rooms" class="col-sm-2 col-form-label">Rooms</label><div class="col-sm-10"><input id="room" name="rooms" placeholder="City" '.$readonly.' value="'.$selectedProperty["rooms"].'" class="form-control" required="required" type="text"></div></div>';
                                     } else {
-                                        echo '<input type="rooms" class="form-control" name="rooms" id="Rooms" placeholder="Rooms">';
+                                        echo '<input type="rooms" class="validate[required,custom[number]] form-control" name="rooms" id="Rooms" placeholder="Rooms">';
                                     }
                             ?>
                         </div>
@@ -137,7 +138,7 @@
                                             echo '<div class="row"><label for="type" class="col-sm-2 col-form-label">Type</label><div class="col-sm-10"><input id="type" name="propertyType" placeholder="type" '.$readonly.' value="'.$selectedProperty["type"].'" class="form-control" required="required" type="text"></div></div>';
                                         } else if(isset($queries["view"]) && $queries["view"] =="2") {
 
-                                            echo '<div class="row"><label for="type" class="col-sm-2 col-form-label">Type</label><div class="col-sm-10"><select id="type" name="propertyType" class="form-control"> <option selected>Select Type</option>';
+                                            echo '<div class="row"><label for="type" class="col-sm-2 col-form-label">Type</label><div class="col-sm-10"><select id="type" name="propertyType" class="validate[required] form-control"> <option selected value="">Select Type</option>';
                                             if($selectedProperty["type"] === "RC") {
                                                 echo '  <option selected value="RC"> RC </option>';
                                             }else {
@@ -157,8 +158,8 @@
                                         
                                         } 
                                         else {
-                                            echo '<select id="type" name="propertyType" class="form-control">
-                                            <option selected>Select Type</option>
+                                            echo '<select id="type" name="propertyType" class="validate[required] form-control">
+                                            <option value="" selected>Select Type</option>
                                               <option value="RC"> RC </option>
                                               <option value="Apartment">Apartment</option>
                                               <option value="Resort">Resort</option></select>';
@@ -196,15 +197,15 @@
                                 echo '<div class="row"><label for="region" class="col-sm-2 col-form-label">Type</label><div class="col-sm-10"><input id="region" name="region"  placeholder="type" '.$readonly.' value="'.$selectedProperty["region"].'" class="form-control" required="required" type="text"></div></div>';
                             } else if(isset($queries["view"]) && $queries["view"] =="2") {
       
-                                echo '<div class="row"><label for="type" class="col-sm-2 col-form-label">Type</label><div class="col-sm-10"><select id="region" name="region" class="form-control">
-                                <option selected>Select Region</option>
+                                echo '<div class="row"><label for="type" class="col-sm-2 col-form-label">Type</label><div class="col-sm-10"><select id="region" name="region" class="validate[required] form-control">
+                                <option value="" selected>Select Region</option>
                                  '.
                                  $tmpregionList
                                  .'
                               </select></div></div>';
                             } 
                             else {
-                                echo ' <select id="region" name="region" class="form-control"><option selected>Select Region</option>'.$tmpregionList.' </select> ';
+                                echo ' <select id="region" name="region" class=" validate[required] form-control"><option value="" selected>Select Region</option>'.$tmpregionList.' </select> ';
                             }
                            ?>
                                   
@@ -238,16 +239,16 @@
                                             echo '<div class="row"><label for="township" class="col-sm-2 col-form-label">Township</label><div class="col-sm-10"><input id="township" name="township" placeholder="type" '.$readonly.' value="'.$selectedProperty["township"].'" class="form-control" required="required" type="text"></div></div>';
                                         } else if(isset($queries["view"]) && $queries["view"] =="2") {
 
-                                            echo '<div class="row"><label for="type" class="col-sm-2 col-form-label">Township</label><div class="col-sm-10"><select id="township" name="township" class="form-control">
-                                            <option selected>Select Township</option>
+                                            echo '<div class="row"><label for="type" class="col-sm-2 col-form-label">Township</label><div class="col-sm-10"><select id="township" name="township" class="validate[required] form-control">
+                                            <option selected value="">Select Township</option>
                                             '.
                                             $tmp
                                         .'
                                           </select></div></div>';
                                         } 
                                         else {
-                                            echo '<select id="township" name="township" class="form-control">
-                                            <option selected>Select Township</option>
+                                            echo '<select id="township" name="township" class="validate[required] form-control">
+                                            <option value="" selected>Select Township</option>
                                               '.
                                                   $tmp
                                               .'
@@ -259,23 +260,36 @@
 
                         </div>
                       
-                        <div class="form-group row col-md-12">
+                        <div class="form-group row col-md-12 mt-3">
                           <label for="ownership" class="col-md-3 col-form-label text-center">OwnerShip:</label>
                           <div class="col-md-9">
                             <?php if(isset($selectedProperty) && $queries["view"] != "2"){
-                                  echo ' <div class="thumb">
+                                  echo ' <div class="thumb mt-3">
                                   <a href="data:image/base64,'.base64_encode($selectedProperty["ownership"]).'" class="fancybox" rel="ligthbox">
                                   <img class="ownership_container" src="data:image/jpeg;base64,' . base64_encode($selectedProperty["ownership"]) . '" width="238px" hight="256px" />
                               </a>
                               </div>';
                               }
-                              else {
+                              else if(isset($selectedProperty) && $queries["view"] != "1") {
                                 echo ' <input type="File" class="form-control" name="ownership" id="ownership" placeholder="ownerShip">';
-                            // //     echo ' <div class="thumb">
+                                echo ' <div class="thumb" >
+                                <a href="data:image/base64,'.base64_encode($selectedProperty["ownership"]).'" class="fancybox" rel="ligthbox">
+                                <img class="ownership_container" style="margin:20px" src="data:image/jpeg;base64,' . base64_encode($selectedProperty["ownership"]) . '" width="238px" hight="256px" />
+                            </a>
+                            </div>';
+                                // //     echo ' <div class="thumb">
                             // //     <a href="data:image/base64,'.base64_encode($selectedProperty["ownership"]).'" class="fancybox" rel="ligthbox">
                             // //     <img class="ownership_container" src="data:image/jpeg;base64,' . base64_encode($selectedProperty["ownership"]) . '" width="238px" hight="256px" />
                             // // </a>
                             // </div>';
+                              } 
+                              else {
+                                echo ' <input type="File" class="form-control" name="ownership" id="ownership" placeholder="ownerShip">';
+                                echo ' <div class="thumb">
+                                <img class="ownership_container"  style="margin:20px" width="238px" hight="256px" />
+                            </a>
+                            </div>';
+                            
                               } 
                             ?>
                             </div>
@@ -290,14 +304,23 @@
                                   </a>
                               </div>';
                               }
+                              else if(isset($selectedProperty) && $queries["view"] != "1") {
+                                //$encodeImage = base64_encode($selectedProperty["image"]);
+                                echo ' <input type="File" class="form-control" name="image" id="image" placeholder="image">';
+                                echo ' <div class="thumb" style="margin: 30px;">
+                                <a href="data:image/base64,'.base64_encode($selectedProperty["image"]).'" class="fancybox" rel="ligthbox">
+                                    <img class="image_container" src="data:image/jpeg;base64,' . base64_encode($selectedProperty["image"]) . '" width="238px" hight="256px" />
+                                </a>
+                            </div>';
+                            
+                              } 
                               else {
                                 //$encodeImage = base64_encode($selectedProperty["image"]);
                                 echo ' <input type="File" class="form-control" name="image" id="image" placeholder="image">';
-                            //     echo ' <div class="thumb">
-                            //     <a href="data:image/gif;base64,'.$encodeImage.'" class="fancybox" rel="ligthbox">
-                            //     <img class="image_container"  src="data:image/jpeg;base64,' .$encodeImage. '" width="238px" hight="256px" />
-                            //     </a>
-                            // </div>';
+                                echo ' <div class="thumb" style="margin: 30px;">
+                                    <img class="image_container" width="238px" hight="256px" />
+                            </div>';
+                            
                               } 
                             ?>
                             
@@ -347,8 +370,10 @@
         </div>
     </div>
 </section>
-
+<script src="js/jquery.validationEngine.js"></script>
+<script src="js/jquery.validationEngine-en.js"></script>
 <script>
+  $("form").validationEngine();
   $(".fancybox").fancybox({
         openEffect: "none",
         closeEffect: "none"
@@ -363,7 +388,7 @@
   $.getJSON( "mm.json", function( data ) {
   var items = [];
   var currentCity = "<?php if(isset($selectedProperty)){echo $selectedProperty["city"];}{ echo "";} ?>"  
-  $('#city').append("<option>Select a City </option>")
+  $('#city').append("<option value=''>Select a City </option>")
   $.each( data, function( key, val ) {
     if(currentCity != val.city) {
       $('#city').append("<option value='"+val.city+"'>"+val.city+"</option>");

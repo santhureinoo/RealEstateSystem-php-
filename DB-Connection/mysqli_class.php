@@ -1,8 +1,5 @@
 <?php
 
-/******************************************************
- * @author Viral Chauhan <viral.chauhan.vd@gmail.com> *
- ******************************************************/
 class ViralDB
 {
 	public  $con;

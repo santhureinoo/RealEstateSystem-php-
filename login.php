@@ -32,6 +32,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
+    
+<link href="css/validationEngine.jquery.css" rel="stylesheet" id="bootstrap-css">
   <script src="js/jquery-3.2.1.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
     <title>Login/Register</title>
@@ -47,8 +49,8 @@
             <?php if(isset($result)){
                       echo "<h4 style='color:red;'>$result</h4>";
             }?>
-            <input type="email" id="inputEmail" name='signin-email' class="form-control mt-2 mb-2" placeholder="Email address" required="" autofocus="">
-            <input type="password" id="inputPassword" name='signin-password' class="form-control mt-2 mb-2" placeholder="Password" required="">
+            <input type="email" id="inputEmail" name='signin-email' class="validate[required] form-control mt-2 mb-2" placeholder="Email address" required="" autofocus="">
+            <input type="password" id="inputPassword" name='signin-password' class="validate[required] form-control mt-2 mb-2" placeholder="Password" required="">
             
             <button class="btn btn-success btn-block" name='signin' type="submit"><i class="fas fa-sign-in-alt"></i> Sign in</button>
             <a href="#" id="forgot_pswd">Forgot password?</a>
@@ -73,23 +75,23 @@
                                 Profile Pic :
                         </div>  
                         <div class="col-md-8">
-                        <input type="file" id="profile" name="profile" class="form-control mt-2 mb-2" placeholder="profile" required autofocus="">
+                        <input type="file" id="profile" name="profile" class="form-control mt-2 mb-2" placeholder="profile"  autofocus="">
                         </div>
                 </div>
-                <input type="text" id="user-name" name="username" class="form-control mt-2 mb-2" placeholder="Full name" required="" autofocus="">
-                <input type="email" id="user-email" name="email" class="form-control mt-2 mb-2" placeholder="Email address" required autofocus="">
+                <input type="text" id="user-name" name="username" class="validate[required] form-control mt-2 mb-2" placeholder="Full name" required="" autofocus="">
+                <input type="email" id="user-email" name="email" class="validate[required, custom[email]] form-control mt-2 mb-2" placeholder="Email address" required autofocus="">
                 <input type="password" id="user-pass" name="password" class="form-control mt-2 mb-2" placeholder="Password" required autofocus="">
                 <input type="password" id="user-repeatpass" class="form-control mt-2 mb-2" placeholder="Repeat Password" required autofocus="">
-                <input type="text" id="address" name="address" class="form-control mt-2 mb-2" placeholder="Current Address" required="" autofocus="">
-                <select id="city" name="city" name="city" class="form-control mt-2 mb-2"></select>
-                <input type="text" id="phone" name="phone" class="form-control mt-2 mb-2" placeholder="Phone Number" required autofocus="">
-                <input type="text" id="nrc" name="nrc" class="form-control mt-2 mb-2" placeholder="NRC Number" required autofocus="">
+                <input type="text" id="address" name="address" class="validate[required] form-control mt-2 mb-2" placeholder="Current Address" required="" autofocus="">
+                <select id="city" name="city" name="city" class="validate[required] form-control mt-2 mb-2"></select>
+                <input type="text" id="phone" name="phone" class="validate[required] form-control mt-2 mb-2" placeholder="Phone Number" required autofocus="">
+                <input type="text" id="nrc" name="nrc" class="validate[required] form-control mt-2 mb-2" placeholder="NRC Number" required autofocus="">
                 <div class="row">
                         <div class="col-md-4 my-auto text-center">
                                 NRC(Back) :
                         </div>  
                         <div class="col-md-8">
-                        <input type="file" id="nrc_back_photo"  name="nrc_back" class="form-control mt-2 mb-2" placeholder="NRC Number" required autofocus="">
+                        <input type="file" id="nrc_back_photo"  name="nrc_back" class="validate[required] form-control mt-2 mb-2" placeholder="NRC Number" required autofocus="">
                         </div>
                 </div>
                 <div class="row">
@@ -97,13 +99,13 @@
                                 NRC(Front) :
                         </div>  
                         <div class="col-md-8">
-                        <input type="file" id="nrc_front_photo" name="nrc_front" class="form-control mt-2 mb-2" placeholder="NRC Number" required autofocus="">
+                        <input type="file" id="nrc_front_photo" name="nrc_front" class="validate[required] form-control mt-2 mb-2" placeholder="NRC Number" required autofocus="">
                         </div>
                 </div>
                 <h4 class='pt-2 pl-2 pr-2'>Optional Information</h4>
                 <h6 class=''>(It may be useful when someone rents your property or you rent someone's property)</h6>
                 <select class="form-control mt-2 mb-2" id="relationship" name="relationship">
-                            <option>Select Your Relationship</option>
+                            <option value="">Select Your Relationship</option>
                             <option value="1">Married</option>
                             <option value="2">Single</option>
                             <option value="3">Divorced</option>
@@ -124,8 +126,11 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	
+    <script src="js/jquery.validationEngine.js"></script>
+    <script src="js/jquery.validationEngine-en.js"></script>
+    
 <script>
+        $("form").validationEngine();
         $.getJSON( "mm.json", function( data ) {
       var items = [];
       $('#city').append("<option>Select a City </option>")

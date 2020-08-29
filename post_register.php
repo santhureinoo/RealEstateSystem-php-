@@ -68,6 +68,7 @@
   }
 ?>
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link href="css/validationEngine.jquery.css" rel="stylesheet" id="bootstrap-css">
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="js/popper.min.js"></script>
 <script src="js/typeahead.js"></script>
@@ -140,8 +141,8 @@
                             </select>
                             </div> -->
                             <div class="form-group">
-                                <select id="type" name='property' <?php echo !$edit? 'disabled':''; ?> class="form-control">
-                                        <option selected>Select Your Property</option>
+                                <select id="type" name='property' <?php echo !$edit? 'disabled':''; ?> class="validate[required] form-control">
+                                        <option selected value=''>Select Your Property</option>
                                         <?php
                                           if(isset($_SESSION['userid'])){
                                             $result = getPropertiesByUser(isset($selectedPost)?$selectedPost['propertyid']:0,$_SESSION['userid'],true);
@@ -168,7 +169,7 @@
                         </div>
                         <div class="col-md-6">
                         <div class="form-group">
-                                <input type="text" name="amount"  <?php echo !$edit? 'disabled':''; ?> class="form-control" placeholder="Amount *"  value="<?php echo isset($selectedPost)?$selectedPost["initial_amount"]:"";?>"/>
+                                <input type="text" name="amount"  <?php echo !$edit? 'disabled':''; ?> class="validate[required,number] form-control" placeholder="Amount *"  value="<?php echo isset($selectedPost)?$selectedPost["initial_amount"]:"";?>"/>
                             </div>
                             </div>
                     </div>
@@ -285,8 +286,10 @@
                 </div>
             </form>
         </div>
-
+        <script src="js/jquery.validationEngine.js"></script>
+        <script src="js/jquery.validationEngine-en.js"></script>
 <script>
+      $(".form").validationEngine();
     
       $('#featureNames').typeahead({
       hint: true,

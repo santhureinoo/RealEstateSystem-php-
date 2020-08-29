@@ -89,7 +89,7 @@
         }
         function deleteUserById($id) {
             global $db;
-            $sql = "UPDATE user SET status='Deleted' where id=$id  and status='Active'";
+            $sql = "UPDATE user SET status='Deleted' where id=$id  and (status='Active' or status='Waiting')";
             if(getActiveProposalByPostId($id)){
                 return "You can't Delete this post because some proposals are currently active.";
             }
@@ -255,7 +255,6 @@
                  $db->update($sql);
                  if($isSale === 'Sale'){
                     $sql = "UPDATE property SET ownerid = (SELECT tenantid FROM proposal WHERE id=$proposalid LIMIT 1) WHERE id = (SELECT post.propertyid FROM post INNER JOIN proposal On post.id = proposal.postid WHERE proposal.id = $proposalid LIMIT 1 )";
-                  
                     $db->update($sql);
                  }
         }

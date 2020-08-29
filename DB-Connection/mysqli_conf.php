@@ -1,5 +1,5 @@
 <?php
-define('HOST', 'localhost');
+define('HOST', 'localhost:3307');
 define('USERNAME', 'root');
 define('PASSWORD', '');
 define('DBNAME', 'estatedb');

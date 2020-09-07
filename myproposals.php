@@ -35,7 +35,7 @@ if(!isset($_SESSION["current_user"])) {
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Property Rental System</title>
+  <title>Property Selling & Rental System</title>
 
   <!-- Bootstrap core CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -108,7 +108,8 @@ if(!isset($_SESSION["current_user"])) {
         <?php
                     $result = getProposals($_SESSION["userid"]);
                     if($result != null) {
-                        foreach( $result as  $proposal){
+                        foreach($result as  $proposal){
+
                             $desc= $proposal["description"];
                             $owner = $proposal["owner"];
                             $ownerid = $proposal["ownerid"];
@@ -119,37 +120,37 @@ if(!isset($_SESSION["current_user"])) {
                             ob_start();
                             require "profile_detail.php";
                         $content = ob_get_clean();                     
-                        function profileData(){
-                          global $id,$content;
-                          global $content;
+                        // function profileData(){
+                        //   global $id,$content;
+                        //   global $content;
                          
-                              return ' <div class="modal " id="profile_'.$id.'">
-                              <div class="modal-dialog modal-lg mw-100 w-75">
-                                <div class="modal-content">
+                        //       return ' <div class="modal " id="profile_'.$id.'">
+                        //       <div class="modal-dialog modal-lg mw-100 w-75">
+                        //         <div class="modal-content">
                             
                                   
-                                  <div class="modal-header">
-                                    <h4 class="modal-title">Profile</h4>
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                  </div>
+                        //           <div class="modal-header">
+                        //             <h4 class="modal-title">Profile</h4>
+                        //             <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        //           </div>
                             
-                                  <!-- Modal body -->
-                                  <div class="modal-body">
-                                  '.
-                                 $content
-                                .'
-                                  </div>
+                        //           <!-- Modal body -->
+                        //           <div class="modal-body">
+                        //           '.
+                        //          $content
+                        //         .'
+                        //           </div>
                             
-                                  <!-- Modal footer -->
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                  </div>
+                        //           <!-- Modal footer -->
+                        //           <div class="modal-footer">
+                        //             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        //           </div>
                             
-                                </div>
-                              </div>
-                            </div>
-                        </div>';
-                        }
+                        //         </div>
+                        //       </div>
+                        //     </div>
+                        // </div>';
+                        // }
                             $status=$proposal["status"];
                             $date=$proposal["created_at"];
                             $id = $proposal["id"];
@@ -284,7 +285,7 @@ if(!isset($_SESSION["current_user"])) {
                                          
                                      </tr>  
                              ";
-                             echo profileData();
+                            //  echo profileData();
                         } 
                     }
                 

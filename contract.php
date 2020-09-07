@@ -1,7 +1,18 @@
 <?php
 session_start();
+if(isset($_SERVER['QUERY_STRING'])) {
+        
+    $queries = array();
+    if(isset($queries['current_user'],$queries['email'],$queries['userid'])){
+        $_SESSION["current_user"] =$queries['user'];
+        $_SESSION['email']= $queries['email'];
+        $_SESSION['userid'] = $queries['userid'];
+    }
+  
+}
+    
 if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
-    header('Location: login.php');
+     header('Location: login1.php');
 }
     include("DB-Connection/personal_data.php");
     include("DB-Connection/property.php");
@@ -26,7 +37,7 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
             $postType = getProposalById($confirm)["postType"];
             echo $postid. ' and ' . $confirm;
             finalConfirmed($confirm,$proposalid,$postid,$postType);
-            header('location:myinbox.php');
+           header('location:myinbox.php');
         }
         
     }
@@ -268,14 +279,15 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
                                                 //Request information
                                                 $version = "8.5";	
                                                 $payment_url = "https://demo2.2c2p.com/2C2PFrontEnd/RedirectV3/payment";
-                                                $result_url_1 = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+                                                $result_url_1 = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"."&user=$_SESSION[current_user]&email=$_SESSION[email]&userid=$_SESSION[userid]";
+                                                // echo $result_url_1;
                                                 // $payment_url = "https://demo2.2c2p.com/2C2PFrontEnd/RedirectV3/payment";
                                                 // $result_url_1 = "http://localhost/V3_UI_PHP_JT01_devPortal_v2.0/V3_UI_PHP_JT01_devPortal_v2.0/result.php";
 
                                                 //Construct signature string
                                                 //Construct signature string
-                                                $params = $version.$merchant_id.$payment_description.$order_id.$currency.$amount.$result_url_1;
-                                                $hash_value = hash_hmac('sha256',$params, $secret_key,false);	//Compute hash value
+                                                // $params = $version.$merchant_id.$payment_description.$order_id.$currency.$amount.$result_url_1;
+                                                // $hash_value = hash_hmac('sha256',$params, $secret_key,false);	//Compute hash value
                                                 // $params = $version.$merchant_id.$payment_description.$order_id.$currency.$amount.$result_url_1;
                                                 // $hash_value = hash_hmac('sha256',$params, $secret_key,false);	//Compute hash value
                                                 $params = $version.$merchant_id.$payment_description.$order_id.$currency.$amount.$result_url_1;
@@ -302,7 +314,8 @@ if(!isset($_SESSION["current_user"]) && !isset($_SESSION["adminAccess"])) {
                                                         <div class="form-group row">
                                                             <label for="staticEmail" class="col-sm-2 col-form-label">Total Amount: </label>
                                                             <div class="col-sm-10">
-                                                                <input type="text" id="finalAmount" class="form-control-plaintext" name="amount" value="'. $amount.'"  readonly/>
+                                                                <input type="text" id="finalAmountDis" class="form-control-plaintext" name="amountD" value="'. $proposal_detail["initial_amount"].'"  readonly/>
+                                                                <input type="hidden" id="finalAmount" class="form-control-plaintext" name="amount" value="'. $amount.'"  readonly/>
                                                             </div>
                                                         </div>
                                                     <input class="btn btn-success" type="submit" name="submit" value="Confirm" />

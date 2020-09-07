@@ -144,12 +144,13 @@
                                 <select id="type" name='property' <?php echo !$edit? 'disabled':''; ?> class="validate[required] form-control">
                                         <option selected value=''>Select Your Property</option>
                                         <?php
-                                          if(isset($_SESSION['userid'])){
-                                            $result = getPropertiesByUser(isset($selectedPost)?$selectedPost['propertyid']:0,$_SESSION['userid'],true);
-                                          }
-                                          else {
-                                            $result = getPropertiesByUser(isset($selectedPost)?$selectedPost['propertyid']:0,$_SESSION['userid'],true);
-                                          }
+                                          echo isset($selectedPost)?$selectedPost['propertyid']:0;
+                                          echo isset($_SESSION['userid'])?$_SESSION['userid']:0;
+                                          echo $edit;
+                                            $result = getPropertiesByUser(isset($selectedPost)?$selectedPost['propertyid']:0,isset($_SESSION['userid'])?$_SESSION['userid']:0,$edit);
+                                          // else {
+                                          //   $result = getPropertiesByUser(isset($selectedPost)?$selectedPost['propertyid']:0,$_SESSION['userid'],true);
+                                          // }
                                             
                                             foreach($result as $res) {
                                                   $id = $res["id"];

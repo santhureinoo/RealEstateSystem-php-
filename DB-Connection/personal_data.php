@@ -243,6 +243,7 @@
         }
 
         function finalConfirmed($id,$proposalid,$postid,$isSale) {
+            // echo $id.$proposalid.$postid,$isSale;
             global $db;
             $sql = "UPDATE proposal SET status='Completed' WHERE id =$id";
              $db->update($sql);
@@ -254,7 +255,8 @@
                 $sql = "UPDATE property SET status='Occupied' WHERE id =(SELECT propertyid FROM post WHERE id =$postid)";
                  $db->update($sql);
                  if($isSale === 'Sale'){
-                    $sql = "UPDATE property SET ownerid = (SELECT tenantid FROM proposal WHERE id=$proposalid LIMIT 1) WHERE id = (SELECT post.propertyid FROM post INNER JOIN proposal On post.id = proposal.postid WHERE proposal.id = $proposalid LIMIT 1 )";
+                    $sql = "UPDATE property SET ownerid = (SELECT tenantid FROM proposal WHERE id=$proposalid LIMIT 1) WHERE id = (SELECT post.propertyid FROM post INNER JOIN proposal On post.id = proposal.postid WHERE proposal.id = $id LIMIT 1 )";
+                    // echo $sql;
                     $db->update($sql);
                  }
         }

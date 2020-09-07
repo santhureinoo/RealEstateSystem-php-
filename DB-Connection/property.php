@@ -189,7 +189,7 @@
 
         function getDisplayContract($proposalid){
             global $db;
-            $sql = "SELECT po.postType as postType, ou.id as ownerid, ou.userName as ownerName, ou.nrc as ownerNRC, CONCAT(ou.address,',',ou.city) as ownerAddress, tu.id as tenantid, tu.userName as tenantName, tu.nrc as tenantNRC, CONCAT(tu.address,',',tu.city) as tenantAddress,pr.city as pCity,pr.township as pTownship, pr.region as pRegion,pr.name as pName  FROM user ou INNER JOIN proposal p On ou.id = p.ownerid INNER JOIN user tu On tu.id = p.tenantid INNER JOIN post po On p.postid = po.id INNER JOIN property pr On pr.id = po.propertyid";
+            $sql = "SELECT po.postType as postType, ou.id as ownerid, ou.userName as ownerName, ou.nrc as ownerNRC, CONCAT(ou.address,',',ou.city) as ownerAddress, tu.id as tenantid, tu.userName as tenantName, tu.nrc as tenantNRC, CONCAT(tu.address,',',tu.city) as tenantAddress,pr.city as pCity,pr.township as pTownship, pr.region as pRegion,pr.name as pName  FROM user ou INNER JOIN proposal p On ou.id = p.ownerid INNER JOIN user tu On tu.id = p.tenantid INNER JOIN post po On p.postid = po.id INNER JOIN property pr On pr.id = po.propertyid WHERE p.id = $proposalid";
             $result = $db->query($sql);
             return $result[0];
         }
@@ -433,16 +433,24 @@
             return $db->query($sql);
         }
         
-        function getPropertiesByUser($selectedPostId,$userid,$isAdmin){
+        function getPropertiesByUser($selectedPostId,$userid,$edit){
             global $db;
-          
-            if(!$isAdmin) {
-                $sql  = "SELECT DISTINCT p.id,p.name FROM property p,post pt WHERE p.id NOT IN (SELECT propertyid FROM post) AND p.ownerid=$userid AND p.id=$selectedPostId OR p.status !='Deleted'";
-            }else {
-                $sql  = "SELECT DISTINCT p.id,p.name FROM property p,post pt WHERE p.id NOT IN (SELECT propertyid FROM post) AND p.id=$selectedPostId OR p.status !='Deleted'";
+            // echo $selectedPostId;
+            // echo $userid;
+            if ($edit) {
+                if($selectedPostId !== 0) {
+                    $sql  = "SELECT DISTINCT p.id,p.name FROM property p,post pt WHERE p.id NOT IN (SELECT propertyid FROM post  WHERE post.status !='DELETED') AND p.ownerid=$userid AND (p.id=$selectedPostId OR p.status = 'Active')";
+                }else {
+                    $sql  = "SELECT DISTINCT p.id,p.name FROM property p,post pt WHERE p.id NOT IN (SELECT propertyid FROM post  WHERE post.status !='DELETED') AND p.ownerid=$userid AND p.status = 'Active' ";
+                    echo $sql;
+                }
+                return $db->query($sql);
             }
-            echo $sql;
-            return $db->query($sql);
+            else {
+                $sql  = "SELECT DISTINCT p.id,p.name FROM property p";
+                return $db->query($sql);
+            }
+        
         }
 
         function getProfileDataByProperty($proid){
@@ -475,7 +483,7 @@
                 return $pageCount;
         }
 
-        function getPartialProperties($offset,$amount,$region = null, $township = null, $propertyName = null, $city = null,$type = null,$min = 0,$max = 0){
+        function getPartialProperties($userid,$offset,$amount,$region = null, $township = null, $propertyName = null, $city = null,$type = null,$min = 0,$max = 0){
             global $db;
             $extraFilter=" ";
             if(!empty($city) || !empty($region) || !empty($township) || !empty($type) || !empty($region) || !empty($square_feet) || !empty($propertyName)){
@@ -490,7 +498,7 @@
             if(!empty($min) && !empty($max)) {
                 $extraFilter= $extraFilter . "AND (Post.initial_amount BETWEEN $min AND $max) ";
             }
-            $sql="SELECT Post.id as id,Property.area,Property.city,Property.township,Property.region,Property.address,Property.name,Property.image,Property.ownership, User.username,Post.initial_amount,Post.created_at,Post.postType FROM Post INNER JOIN Property ON Post.propertyid=Property.id INNER JOIN User ON Property.ownerid=User.id WHERE Post.status ='Active'  $extraFilter  LIMIT $amount OFFSET $offset ";
+            $sql="SELECT Post.id as id,Property.area,Property.city,Property.township,Property.region,Property.address,Property.name,Property.image,Property.ownership, User.username,Post.initial_amount,Post.created_at,Post.postType FROM Post INNER JOIN Property ON Post.propertyid=Property.id INNER JOIN User ON Property.ownerid=User.id WHERE Post.status ='Active' AND Property.ownerid != $userid  $extraFilter  LIMIT $amount OFFSET $offset ";
             $resultSet = $db->query($sql);
             if(isset($resultSet)){
                         foreach($resultSet as $res) {
@@ -498,6 +506,7 @@
                             $encodedImage = base64_encode($res["image"]);
                             $subSql = "SELECT * FROM `post_features` as pf INNER JOIN feature as f ON pf.featureid=f.id where pf.postid=$id LIMIT 4";
                             $subResultSet = $db->query($subSql);
+                            $month =  $res["postType"] !== "Sale"?'/Month':'';
                             $saleOrRent = $res["postType"] === "Sale"? "<div style='position:absolute;' class='sale-notic'>FOR SALE</div>  ": "<div style='position:absolute;' class='rent-notic'>FOR RENT</div>  ";
                             if(isset($subResultSet)) {
                                     $first_feature = isset($subResultSet[0])?' <p><i class="fa fa-check-circle-o"></i>'.$subResultSet[0]["amount"] .' ' .$subResultSet[0]["name"].'</p>':'';
@@ -538,7 +547,7 @@
                                                 </div>	
                                             </div>
                                         </div>
-                                        <a href="property-detail.php?id='.$res['id'].'" class="room-price">'.$res['initial_amount'].' Kyats/Month'.'</a>
+                                        <a href="property-detail.php?id='.$res['id'].'" class="room-price">'.$res['initial_amount'].' Kyats'.$month.'</a>
                                     </div>
                                 </div>
                             </div>
@@ -580,7 +589,7 @@
                                                 </div>	
                                             </div>
                                         </div>
-                                        <a href="property-detail.php?id='.$res['id'].'" class="room-price">'.$res['initial_amount'].' Kyats/Month'.'</a>
+                                        <a href="property-detail.php?id='.$res['id'].'" class="room-price">'.$res['initial_amount'].' Kyats'.$month.'</a>
                                     </div>
                                 </div>
                             </div>

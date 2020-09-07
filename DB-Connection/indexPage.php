@@ -3,10 +3,10 @@
         require_once(dirname(__FILE__).'/mysqli_conf.php');
 
         $db = new ViralDB();
-        function getLatestPost() {
+        function getLatestPost($sessionUser) {
             global $db;
             $today = date('Y-m-d');
-            $sql="SELECT p.id,p.description,pt.name,pt.address,pt.city,p.initial_amount,pt.image,p.postType FROM post p INNER JOIN property pt ON p.propertyid = pt.id WHERE p.status ='Active' and p.created_at >= $today LIMIT 6";
+            $sql="SELECT p.id,p.description,pt.name,pt.address,pt.city,p.initial_amount,pt.image,p.postType FROM post p INNER JOIN property pt ON p.propertyid = pt.id WHERE pt.ownerid!=$sessionUser and p.status ='Active' and p.created_at >= $today LIMIT 6";
 
             return $db->query($sql);
 
@@ -26,9 +26,9 @@
             return null;
         }
 
-        function getNumbersFromCities() {
+        function getNumbersFromCities($sessionUser) {
             global $db;
-            $sql = "SELECT city,COUNT(city) as number FROM PROPERTY group by city ";
+            $sql = "SELECT city,COUNT(city) as number FROM PROPERTY WHERE PROPERTY.ownerid != $sessionUser group by city ";
             $result = $db->query($sql);
             $cityPropertyList = [[]];
             $cityPropertyList["other"] = 0;
@@ -67,7 +67,8 @@
                             $encodedImage = base64_encode($res["image"]);
                             $subSql = "SELECT * FROM `post_features` as pf INNER JOIN feature as f ON pf.featureid=f.id where pf.postid=$id LIMIT 4";
                             $subResultSet = $db->query($subSql);
-                            $saleOrRent = $post["postType"] === "Sale"? "<div style='position:absolute;' class='sale-notic'>FOR SALE</div>  ": "<div style='position:absolute;' class='rent-notic'>FOR RENT</div>  ";
+                            $saleOrRent = $res["postType"] === "Sale"? "<div style='position:absolute;' class='sale-notic'>FOR SALE</div>  ": "<div style='position:absolute;' class='rent-notic'>FOR RENT</div>  ";
+                            $month =  $res["postType"] !== "Sale"?'/Month':'';
                             if(isset($subResultSet)) {
                                     $first_feature = isset($subResultSet[0])?' <p><i class="fa fa-check-circle-o"></i>'.$subResultSet[0]["amount"] .' ' .$subResultSet[0]["name"].'</p>':'';
                                     $second_feature  = isset($subResultSet[1])?' <p><i class="fa fa-check-circle-o"></i>'.$subResultSet[1]["amount"] .' ' .$subResultSet[1]["name"].'</p>':'';
@@ -107,7 +108,7 @@
                                                 </div>	
                                             </div>
                                         </div>
-                                        <a href="property-detail.php?id='.$res['id'].'" class="room-price">'.$res['initial_amount'].' Kyats/Month'.'</a>
+                                        <a href="property-detail.php?id='.$res['id'].'" class="room-price">'.$res['initial_amount'].' Kyats'.$month.'</a>
                                     </div>
                                 </div>
                             </div>

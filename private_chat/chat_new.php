@@ -84,7 +84,7 @@ $picture = $data_user['photo'];
 											}
 											else {
 												$receiverid = $conversation["u2_id"];
-												$userPic=  base64_encode($conversation["u1_photo"]);
+												$userPic=  base64_encode($conversation["u2_photo"]);
 												$receiver = $conversation["u2_username"];
 											}
 										
@@ -158,7 +158,7 @@ $picture = $data_user['photo'];
 									<span><i class="fas fa-phone"></i></span>
 								</div> -->
 							</div>
-							<span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
+							<!-- <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span> -->
 							<!-- <div class="action_menu">
 								<ul>
 									<li><i class="fas fa-user-circle"></i> View profile</li>
@@ -195,9 +195,9 @@ $picture = $data_user['photo'];
 						</div>
 						<div class="card-footer">
 							<div class="input-group">
-								<div class="input-group-append">
+								<!-- <div class="input-group-append">
 									<span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
-								</div>
+								</div> -->
 								<textarea name="" class="form-control type_msg"  id="ln" placeholder="Type your message..."></textarea>
 								<div class="input-group-append">
 									<input type="hidden" id="chat_from_id" value="<?php echo $_SESSION['userid']; ?>">

@@ -4,11 +4,39 @@
 	}
 	include("DB-Connection/property.php");
 	include("DB-Connection/login.php");
+	if(isset($_POST["submit"])){
+		echo "hi";
+		$name = $_POST["name"];
+		$email = $_POST["email"];
+		$message = $_POST["message"];
+		$to_email = $email;
+		$subject = "Notification";
+		$body = "Hi,$name<br/><br/> We Received your letter , Please Wait For Our Contact.";
+		$headers = "From: HN - Property Rental & Selling System";
+	
+		if (mail($to_email, $subject, $body, $headers)) {
+			$to_email = "santhueinoo@gmail.com";
+			$headers = "Contact From $name, Email $email";
+			$subject = "Inquery";
+			$body = "Hi, Customer's Name $name sent this message to you. <br/><br/> $message";
+			if (mail($to_email, $subject, $body, $headers)) {
+				echo "<script>alert('Mail Sent Success');</script>";
+			}
+			else {
+				echo "<script>alert('Mail Sent Failed');</script>";
+			}
+		//     echo "Email successfully sent to $to_email...";
+		} else {
+			echo "<script>alert('Mail Sent Failed');</script>";
+		//     echo "Email sending failed...";
+		}
+	}
+	
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Property Rental System</title>
+	<title>Property Rental And Selling System</title>
 	<meta charset="UTF-8">
 	<meta name="description" content="LERAMIZ Landing Page Template">
 	<meta name="keywords" content="LERAMIZ, unica, creative, html">
@@ -140,17 +168,17 @@
 							<h3>Get in touch</h3>
 							<p>Browse houses and flats for sale and to rent in your area</p>
 						</div>
-						<form class="contact-form">
+						<form action='' method='post' class="contact-form">
 							<div class="row">
 								<div class="col-md-6">
-									<input type="text" placeholder="Your name">
+									<input type="text" name="name" placeholder="Your name">
 								</div>
 								<div class="col-md-6">
-									<input type="text" placeholder="Your email">
+									<input type="text" name="email" placeholder="Your email">
 								</div>
 								<div class="col-md-12">
-									<textarea  placeholder="Your message"></textarea>
-									<button class="site-btn">SUMMIT NOW</button>
+									<textarea name="message" placeholder="Your message"></textarea>
+									<input type="submit" name="submit" class="site-btn" value="SUMMIT NOW"/>
 								</div>
 							</div>
 						</form>
@@ -168,7 +196,7 @@
 			<div class="row">
 				<div class="col-lg-4 col-md-6 footer-widget">
 					<img src="img/logo.png" alt="">
-					<p>PROPERTY RENTAL SYSTEM</p>
+					<p>Property Rental And Selling System</p>
 					<!-- <div class="social">
 						<a href="#"><i class="fa fa-facebook"></i></a>
 						<a href="#"><i class="fa fa-twitter"></i></a>

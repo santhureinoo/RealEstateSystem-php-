@@ -20,7 +20,7 @@
 ?>
 <html lang="en">
 <head>
-	<title>Property Rental System</title>
+	<title>Property Rental And Selling System</title>
 	<meta charset="UTF-8">
 	<meta name="description" content="LERAMIZ Landing Page Template">
 	<meta name="keywords" content="LERAMIZ, unica, creative, html">
@@ -220,14 +220,21 @@
 			<div class="row">
 			<?php 
 					$startPostIndex = ($currentPage * 6) - 6;
-					if(isset($_POST['search'])){
-						getPartialProperties($startPostIndex,6,$_POST['region']!=''?$_POST['region']:'',$_POST['township']!=''?$_POST['township']:'',$_POST['propertyName']!=''?$_POST['propertyName']:'',$_POST['city'],$_POST['type'],$_POST['minprice'],$_POST['maxprice']);
-					}
-					else if($queryData == true){ 
-						getPartialProperties($startPostIndex,6,isset($queries["region"])?$queries["region"]:null,isset($queries["township"]) && $queries['township'] !=''?$queries["township"]:'',isset($queries["propertyName"]) && $queries['propertyName'] !=''?$queries["propertyName"]:'',isset($queries["city"])?$queries["city"]:null,isset($queries['type'])?$queries['type']:null,isset($queries['minprice'])?$queries['minprice']:null,isset($queries['maxprice'])?$queries['maxprice']:null);
+					$sessionUser;
+					if(isset($_SESSION['userid'])) {
+						$sessionUser = $_SESSION['userid'];
 					}
 					else {
-						getPartialProperties($startPostIndex,6,null,null,null,null);
+						$sessionUser = 0;
+					}
+					if(isset($_POST['search'])){
+						getPartialProperties($sessionUser, $startPostIndex,6,$_POST['region']!=''?$_POST['region']:'',$_POST['township']!=''?$_POST['township']:'',$_POST['propertyName']!=''?$_POST['propertyName']:'',$_POST['city'],$_POST['type'],$_POST['minprice'],$_POST['maxprice']);
+					}
+					else if($queryData == true){ 
+						getPartialProperties($sessionUser, $startPostIndex,6,isset($queries["region"])?$queries["region"]:null,isset($queries["township"]) && $queries['township'] !=''?$queries["township"]:'',isset($queries["propertyName"]) && $queries['propertyName'] !=''?$queries["propertyName"]:'',isset($queries["city"])?$queries["city"]:null,isset($queries['type'])?$queries['type']:null,isset($queries['minprice'])?$queries['minprice']:null,isset($queries['maxprice'])?$queries['maxprice']:null);
+					}
+					else {
+						getPartialProperties($sessionUser, $startPostIndex,6,null,null,null,null);
 					}
 					
 				?>
@@ -255,7 +262,7 @@
 			<div class="row">
 				<div class="col-lg-4 col-md-6 footer-widget">
 					<img src="img/logo.png" alt="">
-					<p>PROPERTY RENTAL SYSTEM</p>
+					<p>Property Rental And Selling System</p>
 					<!-- <div class="social">
 						<a href="#"><i class="fa fa-facebook"></i></a>
 						<a href="#"><i class="fa fa-twitter"></i></a>

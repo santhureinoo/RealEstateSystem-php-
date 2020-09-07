@@ -7,8 +7,15 @@
 	include("DB-Connection/login.php");
 	include("DB-Connection/indexPage.php");
 	checkStatus();
-	getLatestPost();
-	$cityList = getNumbersFromCities();
+	// getLatestPost();
+	$sessionUser;
+	if(isset($_SESSION['userid'])) {
+		$sessionUser = $_SESSION['userid'];
+	}
+	else {
+		$sessionUser = 0;
+	}
+	$cityList = getNumbersFromCities($sessionUser);
 	if(isset($_POST['search'])){
 		header('Location: categories.php?region='.$_POST['region'].'&township='.$_POST['township'].'&name='.$_POST["property_name"].'&square_feet='.$_POST['square_feet'].'&rooms='.$_POST['rooms'].'&city='.$_POST["city"].'&type='.$_POST['type'].'&minprice='.$_POST['minprice'].'&maxprice='.$_POST['maxprice']);
 	}
@@ -201,8 +208,8 @@
 	<!-- Properties section -->
 	<section class="properties-section spad">
 		<div class="container">	
-				<?php 
-						$latestPosts = getLatestPost();
+				<?php
+						$latestPosts = getLatestPost($sessionUser);
 						if(isset($latestPosts)){
 							echo '<div class="section-title text-center">
 									<h3>RECENT PROPERTIES</h3>
@@ -211,6 +218,7 @@
 								<div class="row">';
 							foreach($latestPosts as $post) {
 								$saleOrRent = $post["postType"] === "Sale"? "<div style='position:absolute;' class='sale-notic'>FOR SALE</div>  ": "<div style='position:absolute;' class='rent-notic'>FOR RENT</div>  ";
+								$month =  $post["postType"] !== "Sale"?'/Month':'';
 								$encodedImage = base64_encode($post["image"]);
 									echo '
 									<div class="col-md-4">
@@ -225,7 +233,7 @@
 													<h5>'.$post["description"].'</h5>
 													<p><i class="fa fa-map-marker"></i> '.$post["address"].', '.$post["city"].'</p>
 												</div>
-												<div class="price"><a href="property-detail.php?id='.$post['id'].'">'.$post["initial_amount"].' Kyats/Month</a></div>
+												<div class="price"><a href="property-detail.php?id='.$post['id'].'">'.$post["initial_amount"].' Kyats'.$month.'</a></div>
 											</div>
 										</div>
 									</div>
@@ -259,25 +267,25 @@
 				<a href="categories.php?city=nay pyi taw" class="gallery-item set-bg" data-setbg="img/gallery/1.jpg">
 					<div class="gi-info">
 						<h3>Naypyitaw</h3>
-						<p><?php echo $cityList["Nay Pyi Taw"]; ?> Properties</p>
+						<p><?php echo isset($cityList["Nay Pyi Taw"])?$cityList["Nay Pyi Taw"]:0; ?> Properties</p>
 					</div>
 				</a>
 				<a href="categories.php?city=mandalay" class="gallery-item set-bg" data-setbg="img/gallery/2.jpg">
 					<div class="gi-info">
 						<h3>Mandalay</h3>
-						<p><?php echo $cityList["Mandalay"]; ?> Properties</p>
+						<p><?php echo isset($cityList["Mandalay"])?$cityList["Mandalay"]:0; ?> Properties</p>
 					</div>
 				</a>
 				<a href="categories.php?city=Rangoon" class="gallery-item set-bg" data-setbg="img/gallery/3.jpg">
 					<div class="gi-info">
 						<h3>Rangoon</h3>
-						<p><?php echo $cityList["Rangoon"]; ?> Properties</p>
+						<p><?php echo isset($cityList["Rangoon"])?$cityList["Rangoon"]:0; ?> Properties</p>
 					</div>
 				</a>
 				<a href="categories.php?city=other" class="gallery-item set-bg">
 					<div class="gi-info">
 						<h3>Others</h3>
-						<p><?php echo $cityList["other"]; ?> Properties</p>
+						<p><?php echo isset($cityList["other"])?$cityList["other"]:0; ?> Properties</p>
 					</div>
 				</a>
 				
@@ -293,7 +301,7 @@
 			<div class="row">
 				<div class="col-lg-4 col-md-6 footer-widget">
 					<img src="img/logo.png" alt="">
-					<p>PROPERTY RENTAL SYSTEM</p>
+					<p>Property Rental And Selling System</p>
 				</div>
 				<div class="col-lg-4 col-md-6 footer-widget">
 					<div class="contact-widget">

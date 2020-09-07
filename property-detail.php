@@ -13,6 +13,7 @@ if(!isset($_SESSION["current_user"])) {
 			$post_detail = getPostById($id);
 			$user_detail = getUserById($post_detail["ownerid"]);
 			$property_detail = getPropertyByID($post_detail["propertyid"]);
+			$month =  $post_detail["postType"] !== "Sale"?'Kyats/Month':'Kyats';
 			$images = getPostImages($post_detail["id"]);
 		}
 	}
@@ -23,7 +24,7 @@ if(!isset($_SESSION["current_user"])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Property Rental System</title>
+	<title>Property Rental And Selling System</title>
 	<meta charset="UTF-8">
 	<meta name="description" content="LERAMIZ Landing Page Template">
 	<meta name="keywords" content="LERAMIZ, unica, creative, html">
@@ -182,7 +183,7 @@ if(!isset($_SESSION["current_user"])) {
 								<p><i class="fa fa-map-marker"></i><?php echo $property_detail["address"].", ".$property_detail["city"]; ?></p>
 							</div>
 							<div class="col-xl-4">
-								<button data-toggle="modal" data-target="#exampleModal" class="price-btn"><?php echo $post_detail["initial_amount"]?>/ Month</button>
+								<button data-toggle="modal" data-target="#exampleModal" class="price-btn"><?php echo $post_detail["initial_amount"].$month?></button>
 								
 								<!-- Modal -->
 								<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

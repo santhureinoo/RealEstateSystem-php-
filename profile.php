@@ -27,7 +27,7 @@ $encodedImage = base64_encode($profile_data["photo"]);
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Property Rental System</title>
+  <title>Property Rental And Selling System</title>
 
   <!-- Bootstrap core CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">

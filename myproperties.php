@@ -282,7 +282,7 @@ $viewProfile = false;
                 {
                     text: 'Add New Property',
                     action: function ( e, dt, node, config ) {
-                        window.location =window.location.protocol + '//' + window.location.host+'/leramiz/leramiz/property_register.php?id='+<?php echo $_SESSION["userid"];?>;
+                        window.location =window.location.protocol + '//' + window.location.host+'/RealEstateSystem-php--master/RealEstateSystem-php--master/property_register.php?id='+<?php echo $_SESSION["userid"];?>;
                     }
                 }
             ],

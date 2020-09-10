@@ -206,7 +206,7 @@ if(!isset($_SESSION["current_user"])) {
                 {
                     text: 'Add New Post',
                     action: function ( e, dt, node, config ) {
-                        window.location =window.location.protocol + '//' + window.location.host+'/leramiz/leramiz/post_register.php';
+                        window.location =window.location.protocol + '//' + window.location.host+'/RealEstateSystem-php--master/RealEstateSystem-php--master/post_register.php';
                     }
                 }
             ]

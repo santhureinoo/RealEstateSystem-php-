@@ -11,14 +11,14 @@
 		$message = $_POST["message"];
 		$to_email = $email;
 		$subject = "Notification";
-		$body = "Hi,$name<br/><br/> We Received your letter , Please Wait For Our Contact.";
+		$body = "Hi,$name. We Received your letter , \r\n Please Wait For Our Contact.";
 		$headers = "From: HN - Property Rental & Selling System";
 	
 		if (mail($to_email, $subject, $body, $headers)) {
 			$to_email = "santhueinoo@gmail.com";
 			$headers = "Contact From $name, Email $email";
 			$subject = "Inquery";
-			$body = "Hi, Customer's Name $name sent this message to you. <br/><br/> $message";
+			$body = "Hi, Customer's Name $name sent this message to you. \r\n $message";
 			if (mail($to_email, $subject, $body, $headers)) {
 				echo "<script>alert('Mail Sent Success');</script>";
 			}
